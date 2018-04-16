@@ -1,4 +1,22 @@
 *.class
 *.log
 DELETE-THIS-MyToken.txt
-.vs
+
+#Ignore files created by Visual Studio
+.vs/
+*.user
+*.suo
+*.tmp_proj
+*.dbmdl
+*.dbproj.schemaview
+*.cache
+*.vsdoc
+[Oo]bj/
+[Bb]in/
+[Dd]ebug/
+[Rr]elease/
+[Rr][Cc]/
+[Cc]ode[Cc]overage/
+[Ff]x[Cc]op/
+[Ll]og/
+[Tt]emp/
