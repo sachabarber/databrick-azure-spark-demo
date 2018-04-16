@@ -4,9 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SAS.Spark.Runner"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <Button Content="Click me" Margin="10" Click="ButtonBase_OnClick"/>
-    </Grid>
-</Window>
+    <DockPanel LastChildFill="True">
+        <Button Content="Click me" Margin="10" 
+                DockPanel.Dock="Top"
+                Click="ButtonBase_OnClick"/>
+        <avalonEdit:TextEditor
+            x:Name="textEditor"
+            FontFamily="Consolas"
+            SyntaxHighlighting="JavaScript"
+            FontSize="10pt"/>
+    </DockPanel>
+</Window>   

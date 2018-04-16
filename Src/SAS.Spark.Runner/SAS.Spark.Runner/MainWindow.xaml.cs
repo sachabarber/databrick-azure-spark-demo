@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ICSharpCode.AvalonEdit.Folding;
 using SAS.Spark.Runner.REST.DataBricks;
 
 namespace SAS.Spark.Runner
@@ -21,14 +22,24 @@ namespace SAS.Spark.Runner
     /// </summary>
     public partial class MainWindow : Window
     {
+        private FoldingManager _foldingManager;
         public MainWindow()
         {
             InitializeComponent();
+
+            _foldingManager = FoldingManager.Install(textEditor.TextArea);
+   
         }
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            var x = new DatabricksWebApiClient().GetClusterList();
+            var clusterList = await new DatabricksWebApiClient().ClustersListAsync();
+            var cluster = await new DatabricksWebApiClient().ClustersGetAsync(clusterList.clusters[0].cluster_id);
+            var json = cluster.ToString();
+
+            textEditor.Text = json;
+            var foldingStrategy = new BraceFoldingStrategy();
+            foldingStrategy.UpdateFoldings(_foldingManager, textEditor.Document);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Configuration;
+using System.IO;
+using System.Windows;
 using SAS.Spark.Runner.REST.DataBricks;
 
 namespace SAS.Spark.Runner
@@ -9,21 +11,20 @@ namespace SAS.Spark.Runner
         {
             base.OnStartup(e);
 
-
-            if (e.Args.Length != 1)
+            var tokenFileName = ConfigurationManager.AppSettings["TokenFileLocation"];
+            if (!File.Exists(tokenFileName))
             {
-                MessageBox.Show("Expecting token to be provided as command line arg (as raw straight from databricks token creation value)");
+                MessageBox.Show("Expecting token file to be provided");
             }
 
-            AccessToken = e.Args[0];
+            AccessToken = File.ReadAllText(tokenFileName);
 
-
-
-         
-
+            if(!AccessToken.StartsWith("token:"))
+            {
+                MessageBox.Show("Token file should start with 'token:' following directly by YOUR DataBricks initial token you created");
+            }
         }
 
         public static string AccessToken { get; private set; }
-       
     }
 }

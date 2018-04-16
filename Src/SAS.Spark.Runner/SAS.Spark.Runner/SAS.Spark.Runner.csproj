@@ -55,10 +55,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BraceFoldingStrategy.cs" />
+    <Compile Include="REST\DataBricks\Requests\DatabricksRunNowRequest.cs" />
     <Compile Include="REST\DataBricks\Responses\Cluster.cs" />
     <Compile Include="REST\DataBricks\Responses\ClusterInstance.cs" />
     <Compile Include="REST\DataBricks\Responses\ClusterSpec.cs" />
     <Compile Include="REST\DataBricks\Responses\ClusterListResponse.cs" />
+    <Compile Include="REST\DataBricks\Responses\CreateJobResponse.cs" />
+    <Compile Include="REST\DataBricks\Responses\DatabricksClusterStartResponse.cs" />
+    <Compile Include="REST\DataBricks\Responses\DatabricksRunNowResponse.cs" />
     <Compile Include="REST\DataBricks\Responses\DatabricksRunResponse.cs" />
     <Compile Include="REST\DataBricks\Responses\DefaultTags.cs" />
     <Compile Include="REST\DataBricks\Responses\NotebookTask.cs" />
@@ -109,6 +114,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AvalonEdit">
+      <Version>5.0.4</Version>
+    </PackageReference>
     <PackageReference Include="RestSharp">
       <Version>106.2.1</Version>
     </PackageReference>

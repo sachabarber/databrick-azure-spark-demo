@@ -1,6 +1,6 @@
 *.class
 *.log
-DELETE-THIS-MyToken.txt
+MyDataBricksToken.txt
 
 #Ignore files created by Visual Studio
 .vs/
