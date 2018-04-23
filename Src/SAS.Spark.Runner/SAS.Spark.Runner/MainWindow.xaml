@@ -1,20 +1,81 @@
-﻿<Window x:Class="SAS.Spark.Runner.MainWindow"
+﻿<Controls:MetroWindow x:Class="SAS.Spark.Runner.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SAS.Spark.Runner"
+        xmlns:vms="clr-namespace:SAS.Spark.Runner.ViewModels"
+        xmlns:vmsClusters="clr-namespace:SAS.Spark.Runner.ViewModels.Clusters"
+        xmlns:vmsJobs="clr-namespace:SAS.Spark.Runner.ViewModels.Jobs"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <DockPanel LastChildFill="True">
-        <Button Content="Click me" Margin="10" 
-                DockPanel.Dock="Top"
-                Click="ButtonBase_OnClick"/>
-        <avalonEdit:TextEditor
-            x:Name="textEditor"
-            FontFamily="Consolas"
-            SyntaxHighlighting="JavaScript"
-            FontSize="10pt"/>
-    </DockPanel>
-</Window>   
+        WindowState="Maximized"
+        Title="DataBricks API Runner" 
+        MinHeight="768" MinWidth="1024">
+
+    <Controls:MetroWindow.Resources>
+
+        <DataTemplate DataType="{x:Type vms:MainWindowViewModel}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Button Width="100" Height="50" Margin="10" 
+                        Command="{Binding ClusterCommand}"
+                        Content="Clusters" Style="{StaticResource MetroFlatButton}"/>
+                <Button Width="100" Height="50" Margin="10" 
+                        Command="{Binding JobsCommand}"
+                        Content="Jobs" Style="{StaticResource MetroFlatButton}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        
+        <DataTemplate DataType="{x:Type vmsClusters:ClustersListViewModel}">
+            <DockPanel LastChildFill="True">
+                <Button Content="Get List" Margin="10" Width="80" 
+                        HorizontalAlignment="Left"
+                        DockPanel.Dock="Top" Command="{Binding FetchClusterListCommand}"/>
+                <avalonEdit:TextEditor
+                        FontFamily="Consolas"
+                        SyntaxHighlighting="JavaScript"
+                        FontSize="10pt"
+                        vms:TextEditorProps.JsonText="{Binding ClustersJson}"
+                        />
+            </DockPanel>
+        </DataTemplate>
+
+
+        <DataTemplate DataType="{x:Type vmsClusters:ClusterTasksViewModel}">
+            <DockPanel LastChildFill="True">
+                <Button Content="Go Back" Margin="10" Width="80" 
+                        HorizontalAlignment="Left"
+                        DockPanel.Dock="Top" Command="{Binding GoBackCommand}"/>
+                <TabControl >
+                    <TabItem Header="Cluster List" Content="{Binding ClustersListViewModel}"/>
+                    <TabItem Header="Tab2"/>
+                    <TabItem Header="Tab3"/>
+                </TabControl>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vmsJobs:JobTasksViewModel}">
+            <DockPanel LastChildFill="True">
+                <Button Content="Go Back" Margin="10" Width="80" 
+                        HorizontalAlignment="Left"
+                        DockPanel.Dock="Top" Command="{Binding GoBackCommand}"/>
+                <TabControl >
+                    <TabItem Header="Tab4"/>
+                    <TabItem Header="Tab5"/>
+                    <TabItem Header="Tab6"/>
+                </TabControl>
+            </DockPanel>        
+        </DataTemplate>
+
+
+
+    </Controls:MetroWindow.Resources>
+
+    <ContentControl Content="{Binding CurrentTaskViewModel}" 
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"/>
+
+</Controls:MetroWindow>   

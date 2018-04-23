@@ -56,6 +56,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BraceFoldingStrategy.cs" />
+    <Compile Include="EditExample.xaml.cs">
+      <DependentUpon>EditExample.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IOC\ContainerOperations.cs" />
+    <Compile Include="REST\DataBricks\IDatabricksWebApiClient.cs" />
+    <Compile Include="ViewModels\Clusters\ClustersListViewModel.cs" />
+    <Compile Include="ViewModels\Jobs\JobTasksViewModel.cs" />
+    <Compile Include="ViewModels\Clusters\ClusterTasksViewModel.cs" />
+    <Compile Include="ViewModels\INPCBase.cs" />
     <Compile Include="REST\DataBricks\Requests\DatabricksRunNowRequest.cs" />
     <Compile Include="REST\DataBricks\Responses\Cluster.cs" />
     <Compile Include="REST\DataBricks\Responses\ClusterInstance.cs" />
@@ -73,6 +82,17 @@
     <Compile Include="REST\DataBricks\Responses\State.cs" />
     <Compile Include="REST\DataBricks\Responses\Task.cs" />
     <Compile Include="REST\DataBricks\Responses\TerminationReason.cs" />
+    <Compile Include="ViewModels\ExpressionExtensions.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\IMessageBoxService.cs" />
+    <Compile Include="ViewModels\SimpleAsyncCommand.cs" />
+    <Compile Include="ViewModels\SimpleCommand.cs" />
+    <Compile Include="ViewModels\TextEditorProps.cs" />
+    <Compile Include="ViewModels\WPFMessageBoxService.cs" />
+    <Page Include="EditExample.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -114,8 +134,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Autofac">
+      <Version>4.8.0</Version>
+    </PackageReference>
     <PackageReference Include="AvalonEdit">
       <Version>5.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="MahApps.Metro">
+      <Version>1.6.1</Version>
     </PackageReference>
     <PackageReference Include="RestSharp">
       <Version>106.2.1</Version>

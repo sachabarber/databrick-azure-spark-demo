@@ -10,7 +10,7 @@ using RestRequest = RestSharp.Serializers.Newtonsoft.Json.RestRequest;
 
 namespace SAS.Spark.Runner.REST.DataBricks
 {
-    public class DatabricksWebApiClient 
+    public class DatabricksWebApiClient : IDatabricksWebApiClient
     {
         private readonly string _baseUrl;
         private readonly string _authHeader;
