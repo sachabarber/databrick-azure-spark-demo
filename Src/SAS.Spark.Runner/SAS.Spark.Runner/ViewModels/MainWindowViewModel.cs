@@ -25,7 +25,7 @@ namespace SAS.Spark.Runner.ViewModels
             _databricksWebApiClient = databricksWebApiClient;
 
             _clusterTasksViewModel = new ClusterTasksViewModel(this, messageBoxService, databricksWebApiClient);
-            _jobTasksViewModel = new JobTasksViewModel(this);
+            _jobTasksViewModel = new JobTasksViewModel(this, messageBoxService, databricksWebApiClient);
 
             ClusterCommand = new SimpleCommand<object, object>(x => CurrentTaskViewModel = _clusterTasksViewModel);
             JobsCommand = new SimpleCommand<object, object>(x => CurrentTaskViewModel = _jobTasksViewModel);

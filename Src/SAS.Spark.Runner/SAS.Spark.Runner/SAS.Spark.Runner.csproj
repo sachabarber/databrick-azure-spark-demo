@@ -59,9 +59,15 @@
     <Compile Include="EditExample.xaml.cs">
       <DependentUpon>EditExample.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GridUtils.cs" />
     <Compile Include="IOC\ContainerOperations.cs" />
     <Compile Include="REST\DataBricks\IDatabricksWebApiClient.cs" />
+    <Compile Include="ViewModels\Clusters\ClusterStartViewModel.cs" />
+    <Compile Include="ViewModels\Clusters\ClusterGetViewModel.cs" />
     <Compile Include="ViewModels\Clusters\ClustersListViewModel.cs" />
+    <Compile Include="ViewModels\Jobs\JobsListViewModel.cs" />
+    <Compile Include="ViewModels\Jobs\JobsRunNowViewModel.cs" />
+    <Compile Include="ViewModels\Jobs\JobsRunsGetViewModel.cs" />
     <Compile Include="ViewModels\Jobs\JobTasksViewModel.cs" />
     <Compile Include="ViewModels\Clusters\ClusterTasksViewModel.cs" />
     <Compile Include="ViewModels\INPCBase.cs" />
@@ -152,6 +158,15 @@
     <PackageReference Include="RestSharp.Newtonsoft.Json.Extensions">
       <Version>1.0.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Cluster.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Job.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LeftArrow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,29 +4,29 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace SAS.Spark.Runner.ViewModels.Clusters
+namespace SAS.Spark.Runner.ViewModels.Jobs
 {
-    public class ClustersListViewModel : INPCBase
+    public class JobsListViewModel : INPCBase
     {
         private IMessageBoxService _messageBoxService;
         private IDatabricksWebApiClient _databricksWebApiClient;
-        private string _clustersJson;
+        private string _jobsJson;
 
-        public ClustersListViewModel(
+        public JobsListViewModel(
             IMessageBoxService messageBoxService,
             IDatabricksWebApiClient databricksWebApiClient)
         {
             _messageBoxService = messageBoxService;
             _databricksWebApiClient = databricksWebApiClient;
-            FetchClusterListCommand = new SimpleAsyncCommand<object, object>(ExecuteFetchClusterListCommandAsync);
+            FetchJobListCommand = new SimpleAsyncCommand<object, object>(ExecuteFetchJobListCommandAsync);
         }
 
-        private async Task<object> ExecuteFetchClusterListCommandAsync(object param)
+        private async Task<object> ExecuteFetchJobListCommandAsync(object param)
         {
             try
             {
-                var allClusters = await _databricksWebApiClient.ClustersListAsync();
-                ClustersJson =  JsonConvert.SerializeObject(allClusters, Formatting.Indented);
+                var allJobs = await _databricksWebApiClient.JobsListAsync();
+                JobsJson = allJobs.ToString();
             }
             catch(Exception ex)
             {
@@ -35,18 +35,19 @@ namespace SAS.Spark.Runner.ViewModels.Clusters
             return System.Threading.Tasks.Task.FromResult<object>(null);
         }
 
-        public string ClustersJson
+
+        public string JobsJson
         {
             get
             {
-                return this._clustersJson;
+                return this._jobsJson;
             }
             set
             {
-                RaiseAndSetIfChanged(ref this._clustersJson, value, () => ClustersJson);
+                RaiseAndSetIfChanged(ref this._jobsJson, value, () => JobsJson);
             }
         }
 
-        public ICommand FetchClusterListCommand { get; private set; }
+        public ICommand FetchJobListCommand { get; private set; }
     }
 }

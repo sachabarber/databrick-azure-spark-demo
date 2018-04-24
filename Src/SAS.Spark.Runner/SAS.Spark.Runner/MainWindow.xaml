@@ -8,32 +8,119 @@
         xmlns:vmsJobs="clr-namespace:SAS.Spark.Runner.ViewModels.Jobs"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:SAS.Spark.Runner"       
         mc:Ignorable="d"
         WindowState="Maximized"
-        Title="DataBricks API Runner" 
-        MinHeight="768" MinWidth="1024">
+        Title="DataBricks API Runner">
 
     <Controls:MetroWindow.Resources>
 
+
+        <Style x:Key="ImageButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Ellipse x:Name="el" Stroke="#ff0094FF"  Opacity="0.5"
+                                         StrokeThickness="10" Width="100" Height="100"
+                                         Fill="White"
+                                         HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Image x:Name="img" Width="50" Height="50"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Opacity="0.5"
+                                       Source="{Binding RelativeSource={RelativeSource TemplatedParent},
+                                        Path=Tag}" />
+                            </Grid>
+                            <Label  x:Name="lbl" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                                Content="{Binding RelativeSource={RelativeSource TemplatedParent},
+                                        Path=Content}" Foreground="Black" FontFamily="Segoe UI"/>
+                        </StackPanel>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="el" 
+                                    Property="Opacity" Value="1.0"/>
+                                <Setter TargetName="img" 
+                                    Property="Opacity" Value="1.0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="LeftArrowButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Ellipse x:Name="el" Stroke="#ff0094FF"  Opacity="0.5"
+                                         StrokeThickness="4" Width="50" Height="50"
+                                         Fill="White"
+                                         HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Image x:Name="img" Width="30" Height="30"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Opacity="0.5"
+                                       Source="{Binding RelativeSource={RelativeSource TemplatedParent},
+                                        Path=Tag}" />
+                            </Grid>
+                        </StackPanel>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="el" 
+                                    Property="Opacity" Value="1.0"/>
+                                <Setter TargetName="img" 
+                                    Property="Opacity" Value="1.0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <DataTemplate DataType="{x:Type vms:MainWindowViewModel}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Button Width="100" Height="50" Margin="10" 
-                        Command="{Binding ClusterCommand}"
-                        Content="Clusters" Style="{StaticResource MetroFlatButton}"/>
-                <Button Width="100" Height="50" Margin="10" 
-                        Command="{Binding JobsCommand}"
-                        Content="Jobs" Style="{StaticResource MetroFlatButton}"/>
+                <Button Command="{Binding ClusterCommand}" 
+                        Content="Cluster API"
+                        Tag="Images/Cluster.png" Style="{StaticResource ImageButtonStyle}"/>
+
+                <Button Command="{Binding JobsCommand}" 
+                        Content="Job API"
+                        Tag="Images/Job.png" Style="{StaticResource ImageButtonStyle}"/>
+
             </StackPanel>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vmsClusters:ClusterTasksViewModel}">
+            <Grid local:GridUtils.RowDefinitions="*,Auto"
+                  local:GridUtils.ColumnDefinitions="*">
+                <TabControl  Grid.Row="0">
+                    <TabItem Header="Cluster List" Content="{Binding ClustersListViewModel}"/>
+                    <TabItem Header="Get Cluster" Content="{Binding ClusterGetViewModel}"/>
+                    <TabItem Header="Start Cluster" Content="{Binding ClusterStartViewModel}"/>
+                </TabControl>
+                <Button Grid.Row="1"
+                        ToolTip="Go back"
+                        Tag="images/LeftArrow.png"
+                        Style="{StaticResource LeftArrowButtonStyle}"
+                        HorizontalAlignment="Left"
+                        Command="{Binding GoBackCommand}"/>
+            </Grid>
+        </DataTemplate>
         
         <DataTemplate DataType="{x:Type vmsClusters:ClustersListViewModel}">
             <DockPanel LastChildFill="True">
                 <Button Content="Get List" Margin="10" Width="80" 
                         HorizontalAlignment="Left"
+                        Style="{DynamicResource MetroFlatButton}"
                         DockPanel.Dock="Top" Command="{Binding FetchClusterListCommand}"/>
                 <avalonEdit:TextEditor
-                        FontFamily="Consolas"
+                        FontFamily="Segoe UI"
                         SyntaxHighlighting="JavaScript"
                         FontSize="10pt"
                         vms:TextEditorProps.JsonText="{Binding ClustersJson}"
@@ -41,34 +128,122 @@
             </DockPanel>
         </DataTemplate>
 
-
-        <DataTemplate DataType="{x:Type vmsClusters:ClusterTasksViewModel}">
+        <DataTemplate DataType="{x:Type vmsClusters:ClusterGetViewModel}">
             <DockPanel LastChildFill="True">
-                <Button Content="Go Back" Margin="10" Width="80" 
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <Label Content="ClusterId" Margin="3" VerticalAlignment="Center"
+                           VerticalContentAlignment="Center" Height="24"/>
+                    <TextBox Text="{Binding ClusterId}" Width="200" VerticalAlignment="Center"
+                           VerticalContentAlignment="Center" Height="24"/>
+                    <Button Content="Get Cluster" Margin="3,0,3,0" Width="100" 
                         HorizontalAlignment="Left"
-                        DockPanel.Dock="Top" Command="{Binding GoBackCommand}"/>
-                <TabControl >
-                    <TabItem Header="Cluster List" Content="{Binding ClustersListViewModel}"/>
-                    <TabItem Header="Tab2"/>
-                    <TabItem Header="Tab3"/>
-                </TabControl>
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Command="{Binding FetchClusterCommand}"/>
+                </StackPanel>
+                <avalonEdit:TextEditor
+                    FontFamily="Segoe UI"
+                    SyntaxHighlighting="JavaScript"
+                    FontSize="10pt"
+                    vms:TextEditorProps.JsonText="{Binding ClustersJson}"/>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vmsClusters:ClusterStartViewModel}">
+            <DockPanel LastChildFill="True">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <Label Content="ClusterId" Margin="3" VerticalAlignment="Center"
+                           VerticalContentAlignment="Center" Height="24"/>
+                    <TextBox Text="{Binding ClusterId}" Width="200" VerticalAlignment="Center"
+                           VerticalContentAlignment="Center" Height="24"/>
+                    <Button Content="Start Cluster" Margin="3,0,3,0" Width="100" 
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Command="{Binding StartClusterCommand}"/>
+                </StackPanel>
+                <avalonEdit:TextEditor
+                    FontFamily="Segoe UI"
+                    SyntaxHighlighting="JavaScript"
+                    FontSize="10pt"
+                    vms:TextEditorProps.JsonText="{Binding ClustersJson}"/>
             </DockPanel>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vmsJobs:JobTasksViewModel}">
-            <DockPanel LastChildFill="True">
-                <Button Content="Go Back" Margin="10" Width="80" 
-                        HorizontalAlignment="Left"
-                        DockPanel.Dock="Top" Command="{Binding GoBackCommand}"/>
-                <TabControl >
-                    <TabItem Header="Tab4"/>
-                    <TabItem Header="Tab5"/>
-                    <TabItem Header="Tab6"/>
+            <Grid local:GridUtils.RowDefinitions="*,Auto"
+                  local:GridUtils.ColumnDefinitions="*">
+                <TabControl  Grid.Row="0">
+                    <TabItem Header="Job List" Content="{Binding JobsListViewModel}"/>
+                    <TabItem Header="Get Job" Content="{Binding JobsRunsGetViewModel}" />
+                    <TabItem Header="Run Existing Job Now" Content="{Binding JobsRunNowViewModel}" />
+                    <TabItem Header="Tab3" />
                 </TabControl>
-            </DockPanel>        
+                <Button Grid.Row="1"
+                        ToolTip="Go back"
+                        Tag="images/LeftArrow.png"
+                        Style="{StaticResource LeftArrowButtonStyle}"
+                        HorizontalAlignment="Left"
+                        Command="{Binding GoBackCommand}"/>
+            </Grid>
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type vmsJobs:JobsListViewModel}">
+            <DockPanel LastChildFill="True">
+                <Button Content="Get List" Margin="10" Width="80" 
+                        HorizontalAlignment="Left"
+                        Style="{DynamicResource MetroFlatButton}"
+                        DockPanel.Dock="Top" Command="{Binding FetchJobListCommand}"/>
+                <avalonEdit:TextEditor
+                        FontFamily="Segoe UI"
+                        SyntaxHighlighting="JavaScript"
+                        FontSize="10pt"
+                        vms:TextEditorProps.JsonText="{Binding JobsJson}"
+                        />
+            </DockPanel>
         </DataTemplate>
 
+         <DataTemplate DataType="{x:Type vmsJobs:JobsRunsGetViewModel}">
+            <DockPanel LastChildFill="True">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <Label Content="RunId" Margin="3" VerticalAlignment="Center"
+                           VerticalContentAlignment="Center" Height="24"/>
+                    <TextBox Text="{Binding RunId}" Width="200" VerticalAlignment="Center"
+                           VerticalContentAlignment="Center" Height="24"/>
+                    <Button Content="Get Job" Margin="3,0,3,0" Width="100" 
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Command="{Binding JobsRunsGetCommand}"/>
+                </StackPanel>
+                <avalonEdit:TextEditor
+                    FontFamily="Segoe UI"
+                    SyntaxHighlighting="JavaScript"
+                    FontSize="10pt"
+                    vms:TextEditorProps.JsonText="{Binding RunJson}"/>
+            </DockPanel>
+        </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vmsJobs:JobsRunNowViewModel}">
+            <DockPanel LastChildFill="True">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <Label Content="JobId" Margin="3" VerticalAlignment="Center"
+                           VerticalContentAlignment="Center" Height="24"/>
+                    <TextBox Text="{Binding JobId}" Width="200" VerticalAlignment="Center"
+                           VerticalContentAlignment="Center" Height="24"/>
+                    <Button Content="Get Job" Margin="3,0,3,0" Width="100" 
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Command="{Binding JobsRunNowCommand}"/>
+                </StackPanel>
+                <avalonEdit:TextEditor
+                    FontFamily="Segoe UI"
+                    SyntaxHighlighting="JavaScript"
+                    FontSize="10pt"
+                    vms:TextEditorProps.JsonText="{Binding JobJson}"/>
+            </DockPanel>
+        </DataTemplate>
 
     </Controls:MetroWindow.Resources>
 

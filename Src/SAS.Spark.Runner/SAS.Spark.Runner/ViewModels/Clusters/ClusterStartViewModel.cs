@@ -6,27 +6,34 @@ using System.Windows.Input;
 
 namespace SAS.Spark.Runner.ViewModels.Clusters
 {
-    public class ClustersListViewModel : INPCBase
+    public class ClusterStartViewModel : INPCBase
     {
         private IMessageBoxService _messageBoxService;
         private IDatabricksWebApiClient _databricksWebApiClient;
         private string _clustersJson;
+        private string _clusterId;
 
-        public ClustersListViewModel(
+        public ClusterStartViewModel(
             IMessageBoxService messageBoxService,
             IDatabricksWebApiClient databricksWebApiClient)
         {
             _messageBoxService = messageBoxService;
             _databricksWebApiClient = databricksWebApiClient;
-            FetchClusterListCommand = new SimpleAsyncCommand<object, object>(ExecuteFetchClusterListCommandAsync);
+            StartClusterCommand = new SimpleAsyncCommand<object, object>(ExecuteStartClusterCommandAsync);
         }
 
-        private async Task<object> ExecuteFetchClusterListCommandAsync(object param)
+        private async Task<object> ExecuteStartClusterCommandAsync(object param)
         {
+            if(string.IsNullOrEmpty(_clusterId))
+            {
+                _messageBoxService.ShowError("You must supply 'ClusterId'");
+                return System.Threading.Tasks.Task.FromResult<object>(null);
+            }
+
             try
             {
-                var allClusters = await _databricksWebApiClient.ClustersListAsync();
-                ClustersJson =  JsonConvert.SerializeObject(allClusters, Formatting.Indented);
+                var clusterResponse = await _databricksWebApiClient.ClustersStartAsync(_clusterId);
+                ClustersJson = JsonConvert.SerializeObject(clusterResponse, Formatting.Indented);
             }
             catch(Exception ex)
             {
@@ -34,6 +41,7 @@ namespace SAS.Spark.Runner.ViewModels.Clusters
             }
             return System.Threading.Tasks.Task.FromResult<object>(null);
         }
+
 
         public string ClustersJson
         {
@@ -47,6 +55,18 @@ namespace SAS.Spark.Runner.ViewModels.Clusters
             }
         }
 
-        public ICommand FetchClusterListCommand { get; private set; }
+        public string ClusterId
+        {
+            get
+            {
+                return this._clusterId;
+            }
+            set
+            {
+                RaiseAndSetIfChanged(ref this._clusterId, value, () => ClusterId);
+            }
+        }
+
+        public ICommand StartClusterCommand { get; private set; }
     }
 }

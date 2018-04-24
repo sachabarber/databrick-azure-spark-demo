@@ -6,27 +6,34 @@ using System.Windows.Input;
 
 namespace SAS.Spark.Runner.ViewModels.Clusters
 {
-    public class ClustersListViewModel : INPCBase
+    public class ClusterGetViewModel : INPCBase
     {
         private IMessageBoxService _messageBoxService;
         private IDatabricksWebApiClient _databricksWebApiClient;
         private string _clustersJson;
+        private string _clusterId;
 
-        public ClustersListViewModel(
+        public ClusterGetViewModel(
             IMessageBoxService messageBoxService,
             IDatabricksWebApiClient databricksWebApiClient)
         {
             _messageBoxService = messageBoxService;
             _databricksWebApiClient = databricksWebApiClient;
-            FetchClusterListCommand = new SimpleAsyncCommand<object, object>(ExecuteFetchClusterListCommandAsync);
+            FetchClusterCommand = new SimpleAsyncCommand<object, object>(ExecuteFetchClusterCommandAsync);
         }
 
-        private async Task<object> ExecuteFetchClusterListCommandAsync(object param)
+        private async Task<object> ExecuteFetchClusterCommandAsync(object param)
         {
+            if(string.IsNullOrEmpty(_clusterId))
+            {
+                _messageBoxService.ShowError("You must supply 'ClusterId'");
+                return System.Threading.Tasks.Task.FromResult<object>(null);
+            }
+
             try
             {
-                var allClusters = await _databricksWebApiClient.ClustersListAsync();
-                ClustersJson =  JsonConvert.SerializeObject(allClusters, Formatting.Indented);
+                var cluster = await _databricksWebApiClient.ClustersGetAsync(_clusterId);
+                ClustersJson = cluster.ToString();
             }
             catch(Exception ex)
             {
@@ -34,6 +41,7 @@ namespace SAS.Spark.Runner.ViewModels.Clusters
             }
             return System.Threading.Tasks.Task.FromResult<object>(null);
         }
+
 
         public string ClustersJson
         {
@@ -47,6 +55,18 @@ namespace SAS.Spark.Runner.ViewModels.Clusters
             }
         }
 
-        public ICommand FetchClusterListCommand { get; private set; }
+        public string ClusterId
+        {
+            get
+            {
+                return this._clusterId;
+            }
+            set
+            {
+                RaiseAndSetIfChanged(ref this._clusterId, value, () => ClusterId);
+            }
+        }
+
+        public ICommand FetchClusterCommand { get; private set; }
     }
 }

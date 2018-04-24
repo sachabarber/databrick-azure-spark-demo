@@ -56,6 +56,17 @@ namespace SAS.Spark.Runner.REST.DataBricks
             return dbResponse;
         }
 
+        //https://docs.databricks.com/api/latest/jobs.html#list
+        public async Task<JObject> JobsListAsync()
+        {
+            var request = new RestSharp.Serializers.Newtonsoft.Json.RestRequest("api/2.0/jobs/list", Method.GET);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+
+            var response = await _client.ExecuteTaskAsync(request);
+            JObject responseContent = JObject.Parse(response.Content);
+            return responseContent;
+        }
+
         //https://docs.azuredatabricks.net/api/latest/clusters.html#start
         public async Task<DatabricksClusterStartResponse> ClustersStartAsync(string clusterId)
         {

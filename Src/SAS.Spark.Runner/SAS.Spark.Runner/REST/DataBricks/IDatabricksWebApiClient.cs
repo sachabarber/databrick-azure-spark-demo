@@ -17,8 +17,8 @@ namespace SAS.Spark.Runner.REST.DataBricks
         //https://docs.databricks.com/api/latest/jobs.html#runs-get
         Task<DatabricksRunResponse> JobsRunsGetAsync(int runId);
 
-
-
+        //https://docs.databricks.com/api/latest/jobs.html#list
+        Task<JObject> JobsListAsync();
 
         //https://docs.azuredatabricks.net/api/latest/clusters.html#start
         Task<DatabricksClusterStartResponse> ClustersStartAsync(string clusterId);
