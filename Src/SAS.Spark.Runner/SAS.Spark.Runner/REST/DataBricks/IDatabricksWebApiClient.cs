@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SAS.Spark.Runner.REST.DataBricks.Requests;
@@ -20,6 +21,9 @@ namespace SAS.Spark.Runner.REST.DataBricks
         //https://docs.databricks.com/api/latest/jobs.html#list
         Task<JObject> JobsListAsync();
 
+        //https://docs.azuredatabricks.net/api/latest/jobs.html#runs-submit
+        Task<DatabricksRunNowResponse> JobsRunsSubmitJarTaskAsync(RunsSubmitJarTaskRequest runsSubmitJarTaskRequest);
+
         //https://docs.azuredatabricks.net/api/latest/clusters.html#start
         Task<DatabricksClusterStartResponse> ClustersStartAsync(string clusterId);
 
@@ -28,5 +32,24 @@ namespace SAS.Spark.Runner.REST.DataBricks
 
         //https://docs.databricks.com/api/latest/clusters.html#list
         Task<ClusterListResponse> ClustersListAsync();
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#listC:\Users\sacha\Desktop\databrick-azure-spark-demo\Src\SAS.Spark.Runner\SAS.Spark.Runner\REST\DataBricks\IDatabricksWebApiClient.cs
+        Task<DbfsListResponse> DbfsListAsync();
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#put
+        Task<JObject> DbfsPutAsync(FileInfo file);
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#dbfsdbfsservicecreate
+        Task<DatabricksDbfsCreateResponse> DbfsCreateAsync(DatabricksDbfsCreateRequest dbfsRequest);
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#dbfsdbfsserviceaddblock
+        Task<JObject> DbfsAddBlockAsync(DatabricksDbfsAddBlockRequest dbfsRequest);
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#close
+        Task<JObject> DbfsCloseAsync(DatabricksDbfsCloseRequest dbfsRequest);
+
+        
+
+
     }
 }

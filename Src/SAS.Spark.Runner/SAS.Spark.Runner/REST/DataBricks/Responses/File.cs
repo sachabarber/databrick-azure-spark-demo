@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SAS.Spark.Runner.REST.DataBricks.Responses
 {
-    public class State
+    public class File
     {
-        public string life_cycle_state { get; set; }
-        public string result_state { get; set; }
-        public string state_message { get; set; }
+        public string path { get; set; }
+        public bool is_dir { get; set; }
+        public int file_size { get; set; }
     }
 }

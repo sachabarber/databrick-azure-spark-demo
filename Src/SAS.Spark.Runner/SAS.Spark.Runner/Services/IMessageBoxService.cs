@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace SAS.Spark.Runner.ViewModels
+namespace SAS.Spark.Runner.Services
 {
     /// <summary>
     /// Available Button options. 

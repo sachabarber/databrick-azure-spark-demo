@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace SAS.Spark.Runner.ViewModels
+namespace SAS.Spark.Runner.Services
 {
     /// <summary>
     /// This class implements the IMessageBoxService for WPF purposes.

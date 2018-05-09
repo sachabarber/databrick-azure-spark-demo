@@ -1,5 +1,6 @@
 using System;
 using System.Configuration;
+using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -56,6 +57,17 @@ namespace SAS.Spark.Runner.REST.DataBricks
             return dbResponse;
         }
 
+        //https://docs.azuredatabricks.net/api/latest/jobs.html#runs-submit
+        public async Task<DatabricksRunNowResponse> JobsRunsSubmitJarTaskAsync(RunsSubmitJarTaskRequest runsSubmitJarTaskRequest)
+        {
+            var request = new RestRequest("2.0/jobs/runs/submit", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddJsonBody(runsSubmitJarTaskRequest);
+            var response = await _client.ExecuteTaskAsync<DatabricksRunNowResponse>(request);
+            var dbResponse = JsonConvert.DeserializeObject<DatabricksRunNowResponse>(response.Content);
+            return dbResponse;
+        }
+
         //https://docs.databricks.com/api/latest/jobs.html#list
         public async Task<JObject> JobsListAsync()
         {
@@ -100,6 +112,68 @@ namespace SAS.Spark.Runner.REST.DataBricks
             var response = await _client.ExecuteTaskAsync<ClusterListResponse>(request);
             var dbResponse = JsonConvert.DeserializeObject<ClusterListResponse>(response.Content);
             return dbResponse;
+        }
+
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#list
+        public async Task<DbfsListResponse> DbfsListAsync()
+        {
+            var request = new RestRequest("api/2.0/dbfs/list", Method.GET);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddQueryParameter("path", "/");
+
+            var response = await _client.ExecuteTaskAsync<DbfsListResponse>(request);
+            var dbResponse = JsonConvert.DeserializeObject<DbfsListResponse>(response.Content);
+            return dbResponse;
+        }
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#put
+        public async Task<JObject> DbfsPutAsync(FileInfo file)
+        {
+            var request = new RestRequest("api/2.0/dbfs/put", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddFile("back", file.FullName);
+            request.AddHeader("Content -Type", "multipart/form-data");
+
+            var response = await _client.ExecuteTaskAsync(request);
+            JObject responseContent = JObject.Parse(response.Content);
+            return responseContent;
+        }
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#dbfsdbfsservicecreate
+        public async Task<DatabricksDbfsCreateResponse> DbfsCreateAsync(DatabricksDbfsCreateRequest dbfsRequest)
+        {
+            var request = new RestRequest("api/2.0/dbfs/create", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddJsonBody(dbfsRequest);
+
+            var response = await _client.ExecuteTaskAsync<DatabricksDbfsCreateResponse>(request);
+            var dbResponse = JsonConvert.DeserializeObject<DatabricksDbfsCreateResponse>(response.Content);
+            return dbResponse;
+        }
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#dbfsdbfsserviceaddblock
+        public async Task<JObject> DbfsAddBlockAsync(DatabricksDbfsAddBlockRequest dbfsRequest)
+        {
+            var request = new RestRequest("api/2.0/dbfs/add-block", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddJsonBody(dbfsRequest);
+
+            var response = await _client.ExecuteTaskAsync(request);
+            JObject responseContent = JObject.Parse(response.Content);
+            return responseContent;
+        }
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#close
+        public async Task<JObject> DbfsCloseAsync(DatabricksDbfsCloseRequest dbfsRequest)
+        {
+            var request = new RestRequest("api/2.0/dbfs/close", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddJsonBody(dbfsRequest);
+
+            var response = await _client.ExecuteTaskAsync(request);
+            JObject responseContent = JObject.Parse(response.Content);
+            return responseContent;
         }
 
         private static string Base64Encode(string plainText)

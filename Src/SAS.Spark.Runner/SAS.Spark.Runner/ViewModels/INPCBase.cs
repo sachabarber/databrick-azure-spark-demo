@@ -12,12 +12,7 @@ namespace SAS.Spark.Runner.ViewModels
 
         private void NotifyPropertyChanged(PropertyChangedEventArgs args)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, args);
-            }
+            PropertyChanged?.Invoke(this, args);
         }
 
         //Used by code that may want to fire additional properties. For example

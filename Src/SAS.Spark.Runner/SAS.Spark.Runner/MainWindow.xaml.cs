@@ -18,6 +18,7 @@ using MahApps.Metro.Controls;
 using SAS.Spark.Runner.IOC;
 using SAS.Spark.Runner.REST.DataBricks;
 using SAS.Spark.Runner.ViewModels;
+using SAS.Spark.Runner.ViewModels.Jobs;
 
 namespace SAS.Spark.Runner
 {
@@ -29,7 +30,6 @@ namespace SAS.Spark.Runner
         public MainWindow()
         {
             InitializeComponent();
-
             this.DataContext = ContainerOperations.Container.Resolve<MainWindowViewModel>();
         }
     }

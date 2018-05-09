@@ -1,5 +1,6 @@
 ﻿using SAS.Spark.Runner.REST.DataBricks;
 using SAS.Spark.Runner.ViewModels.Clusters;
+using SAS.Spark.Runner.ViewModels.Factories;
 using SAS.Spark.Runner.ViewModels.Jobs;
 using System.Windows.Input;
 
@@ -11,21 +12,13 @@ namespace SAS.Spark.Runner.ViewModels
         private ClusterTasksViewModel _clusterTasksViewModel;
         private JobTasksViewModel _jobTasksViewModel;
 
-        private IMessageBoxService _messageBoxService;
-        private IDatabricksWebApiClient _databricksWebApiClient;
-
-
         public MainWindowViewModel(
-            IMessageBoxService messageBoxService,
-            IDatabricksWebApiClient databricksWebApiClient
-
+            JobTasksViewModelFactory jobTasksViewModelFactory,
+            ClusterTasksViewModelFactory clusterTasksViewModelFactory
             )
         {
-            _messageBoxService = messageBoxService;
-            _databricksWebApiClient = databricksWebApiClient;
-
-            _clusterTasksViewModel = new ClusterTasksViewModel(this, messageBoxService, databricksWebApiClient);
-            _jobTasksViewModel = new JobTasksViewModel(this, messageBoxService, databricksWebApiClient);
+            _clusterTasksViewModel = clusterTasksViewModelFactory.Create(this);
+            _jobTasksViewModel = jobTasksViewModelFactory.Create(this);
 
             ClusterCommand = new SimpleCommand<object, object>(x => CurrentTaskViewModel = _clusterTasksViewModel);
             JobsCommand = new SimpleCommand<object, object>(x => CurrentTaskViewModel = _jobTasksViewModel);

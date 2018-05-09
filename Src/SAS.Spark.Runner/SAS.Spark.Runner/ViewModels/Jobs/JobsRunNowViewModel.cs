@@ -4,6 +4,7 @@ using SAS.Spark.Runner.REST.DataBricks.Requests;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using SAS.Spark.Runner.Services;
 
 namespace SAS.Spark.Runner.ViewModels.Jobs
 {

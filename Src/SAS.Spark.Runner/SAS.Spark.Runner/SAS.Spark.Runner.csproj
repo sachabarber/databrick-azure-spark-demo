@@ -59,12 +59,25 @@
     <Compile Include="EditExample.xaml.cs">
       <DependentUpon>EditExample.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Factories\ClusterTasksViewModelFactory.cs" />
+    <Compile Include="Factories\JobTasksViewModelFactory.cs" />
     <Compile Include="GridUtils.cs" />
     <Compile Include="IOC\ContainerOperations.cs" />
     <Compile Include="REST\DataBricks\IDatabricksWebApiClient.cs" />
+    <Compile Include="REST\DataBricks\Requests\DatabricksDbfsCloseRequest.cs" />
+    <Compile Include="REST\DataBricks\Requests\DatabricksDbfsAddBlockRequest.cs" />
+    <Compile Include="REST\DataBricks\Requests\DatabricksDbfsCreateRequest.cs" />
+    <Compile Include="REST\DataBricks\Requests\RunsSubmitJarTaskRequest.cs" />
+    <Compile Include="REST\DataBricks\Responses\DatabricksDbfsCreateResponse.cs" />
+    <Compile Include="REST\DataBricks\Responses\DbfsListResponse.cs" />
+    <Compile Include="REST\DataBricks\Responses\File.cs" />
     <Compile Include="ViewModels\Clusters\ClusterStartViewModel.cs" />
     <Compile Include="ViewModels\Clusters\ClusterGetViewModel.cs" />
     <Compile Include="ViewModels\Clusters\ClustersListViewModel.cs" />
+    <Compile Include="Services\DataBricksFileUploadService.cs" />
+    <Compile Include="Services\IDataBricksFileUploadService.cs" />
+    <Compile Include="Services\IOpenFileService.cs" />
+    <Compile Include="ViewModels\Jobs\JobsPickAndRunJarViewModel.cs" />
     <Compile Include="ViewModels\Jobs\JobsListViewModel.cs" />
     <Compile Include="ViewModels\Jobs\JobsRunNowViewModel.cs" />
     <Compile Include="ViewModels\Jobs\JobsRunsGetViewModel.cs" />
@@ -90,11 +103,12 @@
     <Compile Include="REST\DataBricks\Responses\TerminationReason.cs" />
     <Compile Include="ViewModels\ExpressionExtensions.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\IMessageBoxService.cs" />
+    <Compile Include="Services\IMessageBoxService.cs" />
     <Compile Include="ViewModels\SimpleAsyncCommand.cs" />
     <Compile Include="ViewModels\SimpleCommand.cs" />
     <Compile Include="ViewModels\TextEditorProps.cs" />
-    <Compile Include="ViewModels\WPFMessageBoxService.cs" />
+    <Compile Include="Services\WPFMessageBoxService.cs" />
+    <Compile Include="Services\WPFOpenFileService.cs" />
     <Page Include="EditExample.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

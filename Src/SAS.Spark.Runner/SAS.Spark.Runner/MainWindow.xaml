@@ -112,7 +112,7 @@
                         Command="{Binding GoBackCommand}"/>
             </Grid>
         </DataTemplate>
-        
+
         <DataTemplate DataType="{x:Type vmsClusters:ClustersListViewModel}">
             <DockPanel LastChildFill="True">
                 <Button Content="Get List" Margin="10" Width="80" 
@@ -177,7 +177,7 @@
                     <TabItem Header="Job List" Content="{Binding JobsListViewModel}"/>
                     <TabItem Header="Get Job" Content="{Binding JobsRunsGetViewModel}" />
                     <TabItem Header="Run Existing Job Now" Content="{Binding JobsRunNowViewModel}" />
-                    <TabItem Header="Tab3" />
+                    <TabItem Header="Run JAR Job" Content="{Binding JobsPickAndRunJarViewModel}"/>
                 </TabControl>
                 <Button Grid.Row="1"
                         ToolTip="Go back"
@@ -187,7 +187,7 @@
                         Command="{Binding GoBackCommand}"/>
             </Grid>
         </DataTemplate>
-        
+
         <DataTemplate DataType="{x:Type vmsJobs:JobsListViewModel}">
             <DockPanel LastChildFill="True">
                 <Button Content="Get List" Margin="10" Width="80" 
@@ -203,7 +203,7 @@
             </DockPanel>
         </DataTemplate>
 
-         <DataTemplate DataType="{x:Type vmsJobs:JobsRunsGetViewModel}">
+        <DataTemplate DataType="{x:Type vmsJobs:JobsRunsGetViewModel}">
             <DockPanel LastChildFill="True">
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                     <Label Content="RunId" Margin="3" VerticalAlignment="Center"
@@ -243,6 +243,69 @@
                     FontSize="10pt"
                     vms:TextEditorProps.JsonText="{Binding JobJson}"/>
             </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="BusyTemplate">
+            <Grid local:GridUtils.RowDefinitions="*,Auto"
+                      local:GridUtils.ColumnDefinitions="*"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch">
+                <Controls:ProgressRing 
+                    IsActive="True" 
+                    Width="120"
+                    Height="120" 
+                    HorizontalContentAlignment="Center"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"/>
+                <Label Content="{Binding Status}" 
+                    Grid.Row="1" 
+                    Grid.Column="0"
+                    FontSize="16"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    HorizontalContentAlignment="Center"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="NormalContentTemplate">
+            <avalonEdit:TextEditor
+                    FontFamily="Segoe UI"
+                    SyntaxHighlighting="JavaScript"
+                    FontSize="10pt"
+                    vms:TextEditorProps.JsonText="{Binding JobJson}"/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vmsJobs:JobsPickAndRunJarViewModel}">
+            <DockPanel LastChildFill="True">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <Label Content="Pick JAR file" Margin="3" VerticalAlignment="Center"
+                           VerticalContentAlignment="Center" Height="24"/>
+                    <TextBox Text="{Binding JarFilePath}" Width="200" VerticalAlignment="Center"
+                           VerticalContentAlignment="Center" Height="24"
+                           IsReadOnly="True"/>
+                    <Button Content="Pick Jar" Margin="3,0,3,0" Width="100" 
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Command="{Binding PickInputJarFileCommand}"/>
+                </StackPanel>
+                <ContentPresenter 
+                    x:Name="cont"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"/>
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                    <Setter TargetName="cont" Property="ContentTemplate" 
+                            Value="{StaticResource BusyTemplate}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsBusy}" Value="False">
+                    <Setter TargetName="cont" Property="ContentTemplate" 
+                            Value="{StaticResource NormalContentTemplate}"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
 
     </Controls:MetroWindow.Resources>

@@ -3,6 +3,7 @@ using SAS.Spark.Runner.REST.DataBricks;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using SAS.Spark.Runner.Services;
 
 namespace SAS.Spark.Runner.ViewModels.Clusters
 {

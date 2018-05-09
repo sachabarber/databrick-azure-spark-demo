@@ -25,10 +25,9 @@ namespace SAS.Spark.Runner.ViewModels
 
         private static void JsonTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is TextEditor)
+            if (d is TextEditor textEditor)
             {
-                TextEditor textEditor = (TextEditor)d;
-                if(!_editorToFoldingLookup.ContainsKey(textEditor))
+                if (!_editorToFoldingLookup.ContainsKey(textEditor))
                 {
                     _editorToFoldingLookup.Add(textEditor, FoldingManager.Install(textEditor.TextArea));
                 }
