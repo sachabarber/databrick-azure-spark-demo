@@ -1,8 +1,8 @@
-using System.IO;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SAS.Spark.Runner.REST.DataBricks.Requests;
 using SAS.Spark.Runner.REST.DataBricks.Responses;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace SAS.Spark.Runner.REST.DataBricks
 {
@@ -33,7 +33,7 @@ namespace SAS.Spark.Runner.REST.DataBricks
         //https://docs.databricks.com/api/latest/clusters.html#list
         Task<ClusterListResponse> ClustersListAsync();
 
-        //https://docs.azuredatabricks.net/api/latest/dbfs.html#listC:\Users\sacha\Desktop\databrick-azure-spark-demo\Src\SAS.Spark.Runner\SAS.Spark.Runner\REST\DataBricks\IDatabricksWebApiClient.cs
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#list
         Task<DbfsListResponse> DbfsListAsync();
 
         //https://docs.azuredatabricks.net/api/latest/dbfs.html#put

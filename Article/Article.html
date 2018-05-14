@@ -7,15 +7,99 @@
 </style>
 </head>
 
-<div id="TOC"></div>
-<h1>Introduction</h1>
+<ul>
+<li><a href="#Introduction">Introduction</a></li>
+
+<li><a href="#What-Is-Spark-/-Databricks?">What Is Spark / Databricks?</a></li>
+
+<li><a href="#Why-Is-Databricks-So-Cool?">Why Is Databricks So Cool?</a></li>
+
+<li><a href="#Where-Is-The-Code?">Where Is The Code?</a></li>
+
+<li><a href="#Prerequisites">Prerequisites</a></li>
+
+<li><a href="#Getting-Started-With-Databricks-In-Azure">Getting Started With Databricks In Azure</a>
+<ul>
+<li><a href="#Exploring-The-Workspace">Exploring The Workspace</a></li>
+
+<li><a href="#Create-A-Cluster">Create A Cluster</a></li>
+
+<li><a href="#Explore-A-NoteBook">Explore A NoteBook</a></li>
+
+<li><a href="#Run-Some-NoteBook-Code">Run Some NoteBook Code</a></li>
+
+<li><a href="#Read/Write-From-Azure-Blob-Store">Read/Write From Azure Blob Store</a></li>
+
+<li><a href="#Creating-Jobs-In-DataBricks-Web-UI">Creating Jobs In DataBricks Web UI</a></li>
+
+<li><a href="#Launch-The-Spark-UI/Dashboard">Launch The Spark UI/Dashboard</a></li>
+
+</ul>
+
+<li><a href="#Databricks-API">Databricks API</a>
+<ul>
+<li><a href="#What-APIs-Are-Available?">What APIs Are Available?</a></li>
+
+<li><a href="#Creating-A-Token-For-Usage-With-API">Creating A Token For Usage With API</a></li>
+
+<li><a href="#Common-Stuff-You-Need-To-Do-With-Any-API-Call">Common Stuff You Need To Do With Any API Call</a>
+<ul>
+<li><a href="#Creating-A-Base64-Encoded-Token-Value">Creating A Base64 Encoded Token Value</a></li>
+
+</ul>
+
+<li><a href="#A-Simple-Throwaway-Demo-App">A Simple Throwaway Demo App</a>
+<ul>
+<li><a href="#How-Do-I-set-My-Token-For-The-Demo-App?">How Do I set My Token For The Demo App?</a></li>
+
+<li><a href="#Example-ViewModel">Example ViewModel</a></li>
+
+<li><a href="#DataTemplate-For-UI">DataTemplate For UI</a></li>
+
+</ul>
+
+<li><a href="#Cluster-API-Exploration">Cluster API Exploration</a>
+<ul>
+<li><a href="#Clusters-List">Clusters List</a></li>
+
+<li><a href="#Cluster-Get">Cluster Get</a></li>
+
+<li><a href="#Cluster-Start">Cluster Start</a></li>
+
+</ul>
+
+<li><a href="#Jobs-API-Exploration">Jobs API Exploration</a>
+<ul>
+<li><a href="#Jobs-List">Jobs List</a></li>
+
+<li><a href="#Jobs-Create">Jobs Create</a></li>
+
+	<li><a href="#Jobs-Runs-Get">Jobs Runs Get</a></li>
+
+<li><a href="#Jobs-Run-Now">Jobs Run Now</a></li>
+
+<li><a href="#Jobs-Run-Submit">Jobs Run Submit</a>
+<ul>
+<li><a href="#The-Scala-Project">The Scala Project</a></li>
+
+</ul>
+
+</ul>
+
+</ul>
+
+<li><a href="#Conclusion">Conclusion</a></li>
+
+</ul>
+
+<h1><a name="Introduction" id="Introduction">Introduction</a></h1>
 <p>This article I will be talking about <a href="https://spark.apache.org/">Apache 
 Spark</a> / <a href="https://databricks.com/">Databricks</a>. It will guide you 
-through how to use the new cloud based hosted <a href="https://databricks.com/">Databricks</a>platform. This article 
+through how to use the new cloud based hosted <a href="https://databricks.com/">Databricks</a> platform. This article 
 will talk about it from a Microsoft Azure standpoint but it should be exactly 
 the same ideas if you were to use Amazon cloud.</p>
 <p>&nbsp;</p>
-<h1>What Is Spark / Databricks?</h1>
+<h1><a name="What-Is-Spark-/-Databricks?" id="What-Is-Spark-/-Databricks?">What Is Spark / Databricks?</a></h1>
 <p>A picture says a thousand word, they say, so here is a nice picture of what 
 Apache Spark is.</p>
 <p><a href="WhatIsSparkBig.png" target="_blank"><img alt="" height="411" src="WhatIsSparkSmall.png" width="630"></a></p>
@@ -87,7 +171,7 @@ Apache Spark came out with <a href="https://databricks.com/">Databricks</a>.</p>
 Spark</a>&nbsp; in the Cloud (Amazon / Azure). It also has the concept of REST 
 APIs for common things. Lets dig into that next.</p>
 <p>&nbsp;</p>
-<h1>Why Is Databricks So Cool?</h1>
+<h1><a name="Why-Is-Databricks-So-Cool?" id="Why-Is-Databricks-So-Cool?">Why Is Databricks So Cool?</a></h1>
 <p>Just before we get into <a href="https://databricks.com/">Databricks</a>, why 
 is it that I think it's so cool?</p>
 <p>Well I have stated one point above already, but lets see the full list</p>
@@ -122,7 +206,7 @@ Spark</a> <a href="https://spark.apache.org/docs/latest/running-on-kubernetes">
 	<li>It's highly intuitive</li>
 </ul>
 <p>&nbsp;</p>
-<h1>Where Is The Code?</h1>
+<h1><a name="Where-Is-The-Code?" id="Where-Is-The-Code?">Where Is The Code?</a></h1>
 <p>So there is a small bit of code that goes with this article, which is split 
 into 2 things</p>
 <ol>
@@ -141,7 +225,7 @@ Spark</a> job that we wish to upload and run on <a href="https://databricks.com/
 <a href="https://github.com/sachabarber/databrick-azure-spark-demo">
 https://github.com/sachabarber/databrick-azure-spark-demo</a></p>
 <p>&nbsp;</p>
-<h1>Prerequisites</h1>
+<h1><a name="Prerequisites" id="Prerequisites">Prerequisites</a></h1>
 <p>There are a few of these, not because <a href="https://databricks.com/">Databricks</a> 
 needs them as such, but because I was keen to show you an entire workflow of how 
 you might use <a href="https://databricks.com/">Databricks</a> for real to do 
@@ -159,7 +243,7 @@ send to <a href="https://databricks.com/">Databricks</a>.</p>
 <p>Obviously if you just want to read along and not try this yourself, you won't 
 need any of this</p>
 <p>&nbsp;</p>
-<h1>Getting Started With Databricks In Azure</h1>
+<h1><a name="Getting-Started-With-Databricks-In-Azure" id="Getting-Started-With-Databricks-In-Azure">Getting Started With Databricks In Azure</a></h1>
 <p>As I said already I will be using Microsoft Azure, but after the initial 
 creation of <a href="https://databricks.com/">Databricks</a> in the Cloud (which 
 will be cloud vendor specific) the rest of the instructions should hold for 
@@ -196,7 +280,7 @@ in more detail below</p>
 </ul>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
-<h2>Exploring The Workspace</h2>
+<h2><a name="Exploring-The-Workspace" id="Exploring-The-Workspace">Exploring The Workspace</a></h2>
 <p>In this section we are going to explore what you can do in the <a href="https://databricks.com/">Databricks</a> 
 workspace web site that is tied to your <a href="https://databricks.com/">Databricks</a> 
 cloud installation . We will not be leaving the workspace web site, everything 
@@ -211,7 +295,7 @@ examine what we can do in the&nbsp; <a href="https://databricks.com/">Databricks
 workspace web site that is tied to your <a href="https://databricks.com/">Databricks</a> 
 cloud installation.</p>
 <p>&nbsp;</p>
-<h2>Create A Cluster</h2>
+<h2><a name="Create-A-Cluster" id="Create-A-Cluster">Create A Cluster</a></h2>
 <p>So the very first thing you might like to do is create a cluster to run some 
 code on. This is easily done using the <a href="https://databricks.com/">Databricks</a> 
 workspace web site as follows</p>
@@ -232,7 +316,7 @@ overview page</p>
 	<li>Job clusters are ones that are used to run Jobs</li>
 </ul>
 <p>&nbsp;</p>
-<h2>Explore A NoteBook</h2>
+<h2><a name="Explore-A-NoteBook" id="Explore-A-NoteBook">Explore A NoteBook</a></h2>
 <p>Now I am a long time Dev (I'm old, or feel it or something), so think nothing 
 about opening up an IDE and writing an app/class lib/jar whatever. Bust at its 
 heart <a href="https://spark.apache.org/">Apache 
@@ -257,7 +341,7 @@ here is some points on notebooks:</p>
 	</code>is a pre-defined variable</li>
 </ul>
 <p>&nbsp;</p>
-<h2>Run Some NoteBook Code</h2>
+<h2><a name="Run-Some-NoteBook-Code" id="Run-Some-NoteBook-Code">Run Some NoteBook Code</a></h2>
 <p>So lets say I have just created a Scala notebook, and I typed the text as 
 shown below in a cell. I can quickly run this using ALT&nbsp; + Enter or the run 
 button in the notebook UI</p>
@@ -268,7 +352,7 @@ button in the notebook UI</p>
 <p>What this will do is run the active cell and print out the variables/output 
 statements to the notebook UI, which can also be seen above</p>
 <p>&nbsp;</p>
-<h2>Read/Write From Azure Blob Store</h2>
+<h2><a name="Read/Write-From-Azure-Blob-Store" id="Read/Write-From-Azure-Blob-Store">Read/Write From Azure Blob Store</a></h2>
 <p>One of the very common tasks when using <a href="https://spark.apache.org/">Apache 
 Spark</a> is to grab some data from some external source and save it to storage 
 once transformed into the required results</p>
@@ -337,7 +421,7 @@ Spark</a> just deals with this, as can be seen </p>
 <p><a href="partBig.png" target="_blank"><img alt="" height="308" src="partSmall.png" width="630"></a></p>
 <p><em>CLICK FOR BIGGER IMAGE</em></p>
 <p>&nbsp;</p>
-<h2>Creating Jobs In DataBricks Web UI</h2>
+<h2><a name="Creating-Jobs-In-DataBricks-Web-UI" id="Creating-Jobs-In-DataBricks-Web-UI">Creating Jobs In DataBricks Web UI</a></h2>
 <p>The <a href="https://databricks.com/">Databricks</a> 
 web UI allows you to create a new job from either a Notebook or a JAR that you 
 have that you can drag in and set a main entry point for. You may also setup a 
@@ -346,7 +430,7 @@ the &quot;<strong>run now</strong>&quot; button which will run your job.</p>
 <p><a href="CReateJobBig.png" target="_blank"><img alt="" height="354" src="CReateJobSmall.png" width="630"></a></p>
 <p><em>CLICK FOR BIGGER IMAGE</em></p>
 <p>&nbsp;</p>
-<h2>Launch The Spark UI/Dashboard</h2>
+<h2><a name="Launch-The-Spark-UI/Dashboard" id="Launch-The-Spark-UI/Dashboard">Launch The Spark UI/Dashboard</a></h2>
 <p>Once you have run a job it is likely that you want to have a look at it to 
 see that it worked how you expected it to work, and that it is running 
 optimally. Luckily <a href="https://spark.apache.org/">Apache 
@@ -365,14 +449,14 @@ Spark</a> UI for this job.</p>
 <p><em>CLICK FOR BIGGER IMAGE</em></p>
 <p>The Spark UI is your friend, try and get acquianted with it</p>
 <p>&nbsp;</p>
-<h1>Databricks API</h1>
+<h1><a name="Databricks-API" id="Databricks-API">Databricks API</a></h1>
 <p>Ok so now that we have covered how to use the <a href="https://databricks.com/">Databricks</a> 
 web UI, how about we get familiar with the REST API such that we can craft our 
 own code around using <a href="https://spark.apache.org/">Apache 
 Spark</a> as our analytics engine. This next section will show how to use some 
 of the REST APIs available.</p>
 <p>&nbsp;</p>
-<h2>What APIs Are Available?</h2>
+<h2><a name="What-APIs-Are-Available?" id="What-APIs-Are-Available?">What APIs Are Available?</a></h2>
 <p>So you may now be wondering what APIs are actually available? This is the 
 place to check : <a href="https://docs.databricks.com/api/latest/index.html">
 https://docs.databricks.com/api/latest/index.html</a></p>
@@ -391,7 +475,7 @@ https://docs.databricks.com/api/latest/index.html</a></p>
 <p>There are simply not enough hours in the day for me to show you ALL of them. 
 So I have chosen a few to demo, which we will talk about below</p>
 <p>&nbsp;</p>
-<h2>Creating A Token For Usage With API</h2>
+<h2><a name="Creating-A-Token-For-Usage-With-API" id="Creating-A-Token-For-Usage-With-API">Creating A Token For Usage With API</a></h2>
 <p>The <a href="https://databricks.com/">Databricks</a> 
 REST APIs ALL need to have a JWT token associated with them. Which means you 
 need to firstly create a token for this. This is easily achieved in the <a href="https://databricks.com/">Databricks</a> 
@@ -405,12 +489,12 @@ request</p>
 <p><a href="workspaceInAzureBig.png" target="_blank"><img alt="" height="112" src="workspaceInAzure.png" width="630"><a/></p>
 <p><em>CLICK FOR BIGGER IMAGE</em></p>
 <p>&nbsp;</p>
-<h2>Common Stuff You Need To Do With Any API Call</h2>
+<h2><a name="Common-Stuff-You-Need-To-Do-With-Any-API-Call" id="Common-Stuff-You-Need-To-Do-With-Any-API-Call">Common Stuff You Need To Do With Any API Call</a></h2>
 <p>So as I just said you will need to ensure that the token from the previous 
 step is supplied on every call. But just how do we do that? What does it look 
 like? Lets use Postman to show an example using the last 2 bits of information 
 from the previous pararaph</p>
-<h3>Creating A Base64 Encoded Token Value</h3>
+<h3><a name="Creating-A-Base64-Encoded-Token-Value" id="Creating-A-Base64-Encoded-Token-Value">Creating A Base64 Encoded Token Value</a></h3>
 <p>The token you got from above needs to be turned into a Base64 encoded string. 
 There are many online tools for this, just pick one. The important thing to note 
 is that you must <strong>ALSO</strong> include a prefix of <code>&quot;token:&quot;</code>. So the full 
@@ -431,7 +515,7 @@ Postman to try out the request, which may look somethinng like this</p>
 	https://northeurope.azuredatabricks.net/api/2.0/clusters/spark-versions</code></li>
 </ul>
 <p>&nbsp;</p>
-<h2>A Simple Throwaway Demo App</h2>
+<h2><a name="A-Simple-Throwaway-Demo-App" id="A-Simple-Throwaway-Demo-App">A Simple Throwaway Demo App</a></h2>
 <p>Obviously you could just mess around in Postman to learn how the <a href="https://databricks.com/">Databricks</a> 
 REST APIs work, nothing wrong with that at all. But to make life easier for you 
 I have come up with a simple (throw away) demo app that you can use to explore 
@@ -443,7 +527,7 @@ pre-canned REST API calls that the demo app provides</p>
 <p>&nbsp;</p>
 <p><img alt="" height="354" src="DemoAppGetClusters.png" width="630"></p>
 <p>&nbsp;</p>
-<h3>How Do I set My Token For The Demo App?</h3>
+<h3><a name="How-Do-I-set-My-Token-For-The-Demo-App?" id="How-Do-I-set-My-Token-For-The-Demo-App?">How Do I set My Token For The Demo App?</a></h3>
 <p>So above when I started talking about the <a href="https://databricks.com/">Databricks</a> 
 REST APIs we said we needed to supply an API token. So how does the demo app 
 deal with this. </p>
@@ -502,7 +586,7 @@ below.</p>
 <p>But before I get into that, I just wanted to show you the rough idea behind 
 each of the API explorations</p>
 <p>&nbsp;</p>
-<h3>Example ViewModel</h3>
+<h3><a name="Example-ViewModel" id="Example-ViewModel">Example ViewModel</a></h3>
 <p>Most of the API explorations are done using a viewmodel something like this</p>
 <pre lang="csharp">
 using SAS.Spark.Runner.REST.DataBricks;
@@ -637,7 +721,7 @@ namespace SAS.Spark.Runner.REST.DataBricks
 }
 </pre>
 <p>&nbsp;</p>
-<h3>DataTemplate For UI</h3>
+<h3><a name="DataTemplate-For-UI" id="DataTemplate-For-UI">DataTemplate For UI</a></h3>
 <p>The actual UI is simple done using a <code>DataTemplate</code>, where we have bound the ViewModel in question to a 
 <code>ContentControl</code>. For the JSON representation I am just using the
 <a href="http://avalonedit.net/">AvalonEdit TextBox</a>.</p>
@@ -691,10 +775,10 @@ as that one is a bit special.</p>
 <p>Just have in the back of your mind that all roughly work this way, and you 
 will be ok</p>
 <p>&nbsp;</p>
-<h2>Cluster API Exploration</h2>
+<h2><a name="Cluster-API-Exploration" id="Cluster-API-Exploration">Cluster API Exploration</a></h2>
 <p>This section shows the Cluster APIs that I chose to look at</p>
 <p>&nbsp;</p>
-<h3>Clusters List</h3>
+<h3><a name="Clusters-List" id="Clusters-List">Clusters List</a></h3>
 <p> <a href="https://databricks.com/">Databricks</a> docs are here :
 <a href="https://docs.databricks.com/api/latest/clusters.html#list">
 https://docs.databricks.com/api/latest/clusters.html#list</a>, and this API call 
@@ -760,7 +844,8 @@ namespace SAS.Spark.Runner.REST.DataBricks
     }
 }
 </pre>
-<h3>Cluster Get</h3>
+<p>&nbsp;</p>
+<h3><a name="Cluster-Get" id="Cluster-Get">Cluster Get</a></h3>
 <p> <a href="https://databricks.com/">Databricks</a> docs are here :
 <a href="https://docs.azuredatabricks.net/api/latest/clusters.html#get">
 https://docs.azuredatabricks.net/api/latest/clusters.html#get</a>, and this API 
@@ -824,7 +909,7 @@ namespace SAS.Spark.Runner.REST.DataBricks
 }
 </pre>
 <p>&nbsp;</p>
-<h3>Cluster Start</h3>
+<h3><a name="Cluster-Start" id="Cluster-Start">Cluster Start</a></h3>
 <p> <a href="https://databricks.com/">Databricks</a> docs are here :
 <a href="https://docs.azuredatabricks.net/api/latest/clusters.html#start">
 https://docs.azuredatabricks.net/api/latest/clusters.html#start</a>, and this 
@@ -895,10 +980,10 @@ namespace SAS.Spark.Runner.REST.DataBricks
 }
 </pre>
 <p>&nbsp;</p>
-<h2>Jobs API Exploration</h2>
+<h2><a name="Jobs-API-Exploration" id="Jobs-API-Exploration">Jobs API Exploration</a></h2>
 <p>This section shows the Jobs APIs that I chose to look at</p>
 <p>&nbsp;</p>
-<h3>Jobs List</h3>
+<h3><a name="Jobs-List" id="Jobs-List">Jobs List</a></h3>
 <p> <a href="https://databricks.com/">Databricks</a> docs are here :
 <a href="https://docs.databricks.com/api/latest/jobs.html#list">
 https://docs.databricks.com/api/latest/jobs.html#list</a>, and this API call 
@@ -960,7 +1045,7 @@ namespace SAS.Spark.Runner.REST.DataBricks
 </pre>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
-<h3>Jobs Create</h3>
+<h3><a name="Jobs-Create" id="Jobs-Create">Jobs Create</a></h3>
 <p> <a href="https://databricks.com/">Databricks</a> docs are here :
 <a href="https://docs.databricks.com/api/latest/jobs.html#create">
 https://docs.databricks.com/api/latest/jobs.html#create</a>, and this API call 
@@ -1060,10 +1145,10 @@ request for a job that runs at 10:15pm each night:</p>
 }
 </pre>
 <p>&nbsp;</p>
-<p>Although the demo app doesnt use this one directly, I use a very similar one, 
+<p>Although the demo app doesn't use this one directly, I use a very similar one, 
 which I will go through it quite some detail below.</p>
-<h3>&nbsp;</h3>
-<h3>Jobs Runs Get</h3>
+<h3><a name="&nbsp;" id="&nbsp;">&nbsp;</a></h3>
+<h3><a name="Jobs-Runs-Get" id="Jobs-Runs-Get">Jobs Runs Get</a></h3>
 <p> <a href="https://databricks.com/">Databricks</a> docs are here :
 <a href="https://docs.databricks.com/api/latest/jobs.html#runs-get">
 https://docs.databricks.com/api/latest/jobs.html#runs-get</a>, and this API call 
@@ -1124,7 +1209,7 @@ namespace SAS.Spark.Runner.REST.DataBricks
 }
 </pre>
 <p>&nbsp;</p>
-<h3>Jobs Run Now</h3>
+<h3><a name="Jobs-Run-Now" id="Jobs-Run-Now">Jobs Run Now</a></h3>
 <p> <a href="https://databricks.com/">Databricks</a> docs are here :
 <a href="https://docs.databricks.com/api/latest/jobs.html#jobsrunnow">
 https://docs.databricks.com/api/latest/jobs.html#jobsrunnow</a>, and this API call 
@@ -1213,18 +1298,613 @@ namespace SAS.Spark.Runner.REST.DataBricks.Requests
 }
 </pre>
 <p>&nbsp;</p>
-<h3>Jobs Run Submit</h3>
+<h3><a name="Jobs-Run-Submit" id="Jobs-Run-Submit">Jobs Run Submit</a></h3>
+<p> <a href="https://databricks.com/">Databricks</a> docs are here :
+<a href="https://docs.azuredatabricks.net/api/latest/jobs.html#runs-submit">
+https://docs.azuredatabricks.net/api/latest/jobs.html#runs-submit</a>, and this API call 
+does the following:</p>
+<ul>
+	<li>Submit a one-time run with the provided settings. This endpoint doesn't 
+	require a Databricks job to be created. You can directly submit your 
+	workload. Runs submitted via this endpoint don't show up in the UI. Once the 
+	run is submitted, you can use the <code>jobs/runs/get</code> API to check 
+	the run state.<br></li>
+</ul>
+<p>Now this is probably the most complex, but most useful of ALL of the REST 
+APIs, a it allows you to do the following :</p>
+<ul>
+	<li>Run by using a JAR writen Scala (where you can pass in command line args 
+	too)</li>
+	<li>Run using a notebook</li>
+	<li>Run using a python file (where you can pass in command line args too)</li>
+</ul>
+<p>As I am quite keen on Scala I will be using Scala for the demo</p>
+<p>&nbsp;</p>
+<h4><a name="The-Scala-Project" id="The-Scala-Project">The Scala Project</a></h4>
+<p>The demo code has a 2nd project in the source code : <code>
+Src/SAS.SparkScalaJobApp</code> which is a IntelliJ IDEA Scala project. To run 
+this you will need the prerequisites at the top of this article.</p>
+<p>One you have downloaded the code you should run SBT in a command line window, 
+and navigate to the&nbsp; <code>Src/SAS.SparkScalaJobApp</code> folder. And 
+issue these SBT command</p>
+<pre>&nbsp;
+&gt; clean
+&gt;compile
+&gt;assembly
+</pre>
+<p>From there you should be able to go to the <code>Target </code>directory and see a FAT Jar 
+(one with all dependencies bundled together)</p>
+<p><img alt="" height="131" src="FatJar.png" width="630"></p>
+<p>We will use this in just a moment, but lets just take a minute to examine the 
+code. It is a very simple Spark job that expects a single Int command line 
+argument (that we will send via the REST call in a moment), and will then create 
+List of that many items that have some simple Spark transformations applied.</p>
+<p>&nbsp;</p>
+<div style="border:1px solid black; background-color:yellow">
+<p style="margin:10px;"><strong>NOTE :</strong> </p>
+	<p style="margin:10px;">&nbsp;</p>
+	<p style="margin:10px;">One thing to note is that we need to be careful about how we use 
+things like <code>SparkContext </code>and <code>SparkSession </code>which if you 
+have done any spark before you will have created yourself. When using a Cloud 
+provider such as AWS or Azure you need to use the existing <code>SparkContext
+</code>and <code>SparkSession</code>, and we also need to avoid 
+terminating/shutting down this items, as they are in effect shared. This blog is 
+a good read on this :
+<a href="https://databricks.com/blog/2016/08/15/how-to-use-sparksession-in-apache-spark-2-0.html">
+https://databricks.com/blog/2016/08/15/how-to-use-sparksession-in-apache-spark-2-0.html</a></p>
+
+</div>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
+<pre lang="scala">
+import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
+import org.apache.spark.sql.SparkSession
+
+object SparkApp extends App {
+
+  println("===== Starting =====")
+
+  if(args.length != 1) {
+    println("Need exactly 1 int arg")
+  }
+
+  Try {
+    Integer.parseInt(args(0))
+  } match {
+    case Success(v:Int) =&gt; {
+      val combinedArgs = args.aggregate("")(_ + _, _ + _)
+      println(s"Args were $combinedArgs")
+      SparkDemoRunner.runUsingArg(v)
+      println("===== Done =====")
+    }
+    case Failure(e) =&gt;  {
+      println(s"Could not parse command line arg [$args(0)] to Int")
+      println("===== Done =====")
+    }
+  }
+}
+
+object SparkDemoRunner {
+  def runUsingArg(howManyItems : Int) : Unit =  {
+    val session = SparkSession.builder().getOrCreate()
+    import session.sqlContext.implicits._
+
+    val multiplier = 2
+    println(s"multiplier is set to $multiplier")
+
+    val multiplierBroadcast = session.sparkContext.broadcast(multiplier)
+    val data = List.tabulate(howManyItems)(_ + 1)
+    val dataRdd = session.sparkContext.parallelize(data)
+    val mappedRdd = dataRdd.map(_ * multiplierBroadcast.value)
+    val df = mappedRdd.toDF
+    df.show()
+  }
+}
+</pre>
 <p>&nbsp;</p>
+<p>Anyway so once we have that Jar file available, we need to use a few APIs 
+which I will go through 1 by 1, but here is the rough flow:</p>
+<ul>
+	<li>Examine if the chosen Jar file exists in the Dbfs (Databricks file 
+	system, which means we have uploaded it already)</li>
+	<li>Start the upload of the file (which we have to do in chunks as there is 
+	a 1MB limit on the single
+	<a href="https://docs.azuredatabricks.net/api/latest/dbfs.html#put">
+	2.0/dbfs/put</a> API) to get a file handle</li>
+	<li>Upload blocks of data for the file hadle as Base64 encoded strings</li>
+	<li>Close the file using the file handle</li>
+	<li>Craft a runs-submit request to make use of the just uploaded/latest Dbfs 
+	file</li>
+</ul>
 <p>&nbsp;</p>
+<p>So that's the rough outline of it</p>
 <p>&nbsp;</p>
+<p>So here is the ViewModel that will allow you pick the Jar (which as stated 
+above should be in the <code>Target </code>folder of the&nbsp;&nbsp; <code>Src/SAS.SparkScalaJobApp</code> 
+source code if you followed the instructions above to compile it using SBT.</p>
+<pre lang="csharp">
+using SAS.Spark.Runner.REST.DataBricks;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using SAS.Spark.Runner.Services;
+using System.Linq;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Diagnostics;
+
+namespace SAS.Spark.Runner.ViewModels.Jobs
+{
+    public class JobsPickAndRunJarViewModel : INPCBase
+    {
+        private IMessageBoxService _messageBoxService;
+        private IDatabricksWebApiClient _databricksWebApiClient;
+        private IOpenFileService _openFileService;
+        private IDataBricksFileUploadService _dataBricksFileUploadService;
+        private string _jarFilePath;
+        private string _status;
+        private FileInfo _jarFile;
+        private bool _isBusy;
+        private bool _isPolling = false;
+        private string _jobsJson;
+        private Stopwatch _watch = new Stopwatch();
+
+        public JobsPickAndRunJarViewModel(
+            IMessageBoxService messageBoxService,
+            IDatabricksWebApiClient databricksWebApiClient,
+            IOpenFileService openFileService,
+            IDataBricksFileUploadService dataBricksFileUploadService)
+        {
+            _messageBoxService = messageBoxService;
+            _databricksWebApiClient = databricksWebApiClient;
+            _openFileService = openFileService;
+            _dataBricksFileUploadService = dataBricksFileUploadService;
+            PickInputJarFileCommand = new SimpleAsyncCommand&lt;object, object&gt;(x =&gt; !IsBusy && !_isPolling, ExecutePickInputJarFileCommandAsync);
+        }
+
+        public string JobsJson
+        {
+            get
+            {
+                return this._jobsJson;
+            }
+            set
+            {
+                RaiseAndSetIfChanged(ref this._jobsJson, value, () =&gt; JobsJson);
+            }
+        }
+
+        public string JarFilePath
+        {
+            get
+            {
+                return this._jarFilePath;
+            }
+            set
+            {
+                RaiseAndSetIfChanged(ref this._jarFilePath, value, () =&gt; JarFilePath);
+            }
+        }
+
+        public string Status
+        {
+            get
+            {
+                return this._status;
+            }
+            set
+            {
+                RaiseAndSetIfChanged(ref this._status, value, () =&gt; Status);
+            }
+        }
+
+        public bool IsBusy
+        {
+            get
+            {
+                return this._isBusy;
+            }
+            set
+            {
+                RaiseAndSetIfChanged(ref this._isBusy, value, () =&gt; IsBusy);
+            }
+        }
+
+        public ICommand PickInputJarFileCommand { get; private set; }
+ 
+        
+
+        private async Task&lt;object&gt; ExecutePickInputJarFileCommandAsync(object param)
+        {
+            IsBusy = true;
+
+            try
+            {
+                _openFileService.Filter = "Jar Files (*.jar)|*.jar";
+                _openFileService.InitialDirectory = @"c:\";
+                _openFileService.FileName = "";
+                var dialogResult = _openFileService.ShowDialog(null);
+                if(dialogResult.Value)
+                {
+                    if(!_openFileService.FileName.ToLower().EndsWith(".jar"))
+                    {
+                        _messageBoxService.ShowError($"{_openFileService.FileName} is not a JAR file");
+                        return Task.FromResult&lt;object&gt;(null);
+                    }
+                    _jarFile = new FileInfo(_openFileService.FileName);
+                    JarFilePath = _jarFile.Name;
+                    var rawBytesLength = File.ReadAllBytes(_jarFile.FullName).Length;
+                    await _dataBricksFileUploadService.UploadFileAsync(_jarFile, rawBytesLength,
+                        (newStatus) =&gt; this.Status = newStatus);
+
+                    bool uploadedOk = await IsDbfsFileUploadedAndAvailableAsync(_jarFile, rawBytesLength);
+                    if (uploadedOk)
+                    {
+                        //2.0/jobs/runs/submit
+                        //poll for success using jobs/runs/get, store that in the JSON
+
+                        var runId = await SubmitJarJobAsync(_jarFile);
+                        if(!runId.HasValue)
+                        {
+                            IsBusy = false;
+                            _messageBoxService.ShowError(this.Status = $"Looks like there was a problem with calling Spark API '2.0/jobs/runs/submit'");
+                        }
+                        else
+                        {
+                            await PollForRunIdAsync(runId.Value);
+                        }
+
+                    }
+                    else
+                    {
+                        IsBusy = false;
+                        _messageBoxService.ShowError("Looks like the Jar file did not upload ok....Boo");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _messageBoxService.ShowError(ex.Message);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+            return Task.FromResult&lt;object&gt;(null);
+        }
+
+        private async Task&lt;bool&gt; IsDbfsFileUploadedAndAvailableAsync(FileInfo dbfsFile, int rawBytesLength)
+        {
+            bool fileUploadOk = false;
+            int maxNumberOfAttemptsAllowed = 10;
+            int numberOfAttempts = 0;
+
+            while (!fileUploadOk || (numberOfAttempts == maxNumberOfAttemptsAllowed))
+            {
+                //check for the file in Dbfs
+                var response = await _databricksWebApiClient.DbfsListAsync();
+                fileUploadOk = response.files.Any(x =&gt;
+
+                    x.file_size == rawBytesLength &&
+                    x.is_dir == false &&
+                    x.path == $@"/{dbfsFile.Name}"
+                );
+                numberOfAttempts++;
+                this.Status = $"Checking that Jar has been uploaded ok.\r\nAttempt {numberOfAttempts} out of {maxNumberOfAttemptsAllowed}";
+                await Task.Delay(500);
+            }
+            return fileUploadOk;
+        }
+
+        private async Task&lt;int?&gt; SubmitJarJobAsync(FileInfo dbfsFile)
+        {
+            this.Status = $"Creating the Spark job using '2.0/jobs/runs/submit'";
+
+            // =====================================================================
+            // EXAMPLE REQUEST
+            // =====================================================================
+            //{
+            //  "run_name": "my spark task",
+            //  "new_cluster": 
+            //  {
+            //    "spark_version": "3.4.x-scala2.11",
+            //    "node_type_id": "Standard_D3_v2",
+            //    "num_workers": 10
+            //  },
+            //  "libraries": [
+            //    {
+            //      "jar": "dbfs:/my-jar.jar"
+            //    }
+            //  ],
+            //  "timeout_seconds": 3600,
+            //  "spark_jar_task": {
+            //    "main_class_name": "com.databricks.ComputeModels",
+            //    "parameters" : ["10"]
+            //  }
+            //}
+
+            var datePart = DateTime.Now.ToShortDateString().Replace("/", "");
+            var timePart = DateTime.Now.ToShortTimeString().Replace(":", "");
+            var request = new RunsSubmitJarTaskRequest()
+            {
+                run_name = $"JobsPickAndRunJarViewModel_{datePart}_{timePart}",
+                new_cluster = new NewCluster
+                {
+                    // see api/2.0/clusters/spark-versions
+                    spark_version = "4.0.x-scala2.11",
+                    // see api/2.0/clusters/list-node-types
+                    node_type_id = "Standard_F4s",
+                    num_workers = 2
+                },
+                libraries = new List&lt;Library&gt;
+                {
+                    new Library { jar = $"dbfs:/{dbfsFile.Name}"}
+                },
+                timeout_seconds = 3600,
+                spark_jar_task = new SparkJarTask
+                {
+                    main_class_name = "SparkApp",
+                    parameters = new List&lt;string&gt;() { "10" }
+                }
+            };
+
+            var response = await _databricksWebApiClient.JobsRunsSubmitJarTaskAsync(request);
+            return response.RunId;
+        }
+
+        private async Task PollForRunIdAsync(int runId)
+        {
+            _watch.Reset();
+            _watch.Start();
+            while (_isPolling)
+            {
+                var response = await _databricksWebApiClient.JobsRunsGetAsync(runId);
+                JobsJson = JsonConvert.SerializeObject(response, Formatting.Indented);
+                var state = response.state;
+                this.Status = "Job not complete polling for completion.\r\n" +
+                    $"Job has been running for {_watch.Elapsed.Seconds} seconds";
+
+                try
+                {
+                    if (!string.IsNullOrEmpty(state.result_state))
+                    {
+                        _isPolling = false;
+                        IsBusy = false;
+                        _messageBoxService.ShowInformation(
+                            $"Job finnished with Status : {state.result_state}");
+                    }
+                    else
+                    {
+                        switch (state.life_cycle_state)
+                        {
+                            case "TERMINATING":
+                            case "RUNNING":
+                            case "PENDING":
+                                break;
+                            case "SKIPPED":
+                            case "TERMINATED":
+                            case "INTERNAL_ERROR":
+                                _isPolling = false;
+                                IsBusy = false;
+                                break;
+                        }
+                    }
+                }
+                finally
+                {
+                    if (_isPolling)
+                    {
+                        await Task.Delay(5000);
+                    }
+                }
+            }
+        }
+    }
+}
+</pre>
+<p>Where we use this helper class to do the actual upload to Dbfs</p>
+<pre lang="csharp">
+using SAS.Spark.Runner.REST.DataBricks;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SAS.Spark.Runner.Services
+{
+    public class DataBricksFileUploadService : IDataBricksFileUploadService
+    {
+        private IDatabricksWebApiClient _databricksWebApiClient;
+
+        public DataBricksFileUploadService(IDatabricksWebApiClient databricksWebApiClient)
+        {
+            _databricksWebApiClient = databricksWebApiClient;
+        }
+
+        public async Task UploadFileAsync(FileInfo file, int rawBytesLength, 
+            Action&lt;string&gt; statusCallback, string path = "")
+        {
+            var dbfsPath = $"/{file.Name}";
+
+            //Step 1 : Create the file
+            statusCallback("Creating DBFS file");
+            var dbfsCreateResponse = await _databricksWebApiClient.DbfsCreateAsync(
+                new DatabricksDbfsCreateRequest
+                    {
+                        overwrite = true,
+                        path = dbfsPath
+                    });
+
+            //Step 2 : Add block in chunks
+            FileStream fileStream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
+            var oneMegaByte = 1 &lt;&lt; 20;
+            byte[] buffer = new byte[oneMegaByte];
+            int bytesRead = 0;
+            int totalBytesSoFar = 0;
+            while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
+            {
+                totalBytesSoFar += bytesRead;
+                statusCallback(
+                    $"Uploaded {FormatAsNumeric(totalBytesSoFar)} " +
+                    $"out of {FormatAsNumeric(rawBytesLength)} bytes to DBFS");
+                var base64EncodedData = Convert.ToBase64String(buffer.Take(bytesRead).ToArray());
+
+                await _databricksWebApiClient.DbfsAddBlockAsync(
+                    new DatabricksDbfsAddBlockRequest
+                        {
+                            data = base64EncodedData,
+                            handle = dbfsCreateResponse.Handle
+                    });
+
+            }
+            fileStream.Close();
+
+            //Step 3 : Close the file
+            statusCallback($"Finalising write to DBFS file");
+            await _databricksWebApiClient.DbfsCloseAsync(
+                    new DatabricksDbfsCloseRequest
+                    {
+                        handle = dbfsCreateResponse.Handle
+                    });
+
+        }
+
+        private string FormatAsNumeric(int byteLength)
+        {
+            return byteLength.ToString("###,###,###");
+        }
+    }
+}
+</pre>
+<p>And just for completeness here is the set of REST APIs that make the 2 proceeded code snippets work</p>
+<pre lang="csharp">
+using System;
+using System.Configuration;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using SAS.Spark.Runner.REST.DataBricks.Responses;
+using RestRequest = RestSharp.Serializers.Newtonsoft.Json.RestRequest;
+
+namespace SAS.Spark.Runner.REST.DataBricks
+{
+    public class DatabricksWebApiClient : IDatabricksWebApiClient
+    {
+        private readonly string _baseUrl;
+        private readonly string _authHeader;
+        private readonly RestClient _client;
+
+        public DatabricksWebApiClient()
+        {
+            _baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+            _authHeader = Base64Encode(App.AccessToken);
+            _client = new RestClient(_baseUrl);
+        }
+
+        //https://docs.azuredatabricks.net/api/latest/jobs.html#runs-submit
+        public async Task&lt;DatabricksRunNowResponse&gt; JobsRunsSubmitJarTaskAsync(
+			RunsSubmitJarTaskRequest runsSubmitJarTaskRequest)
+        {
+            var request = new RestRequest("2.0/jobs/runs/submit", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddJsonBody(runsSubmitJarTaskRequest);
+            var response = await _client.ExecuteTaskAsync&lt;DatabricksRunNowResponse&gt;(request);
+            var dbResponse = JsonConvert.DeserializeObject&lt;DatabricksRunNowResponse&gt;(response.Content);
+            return dbResponse;
+        }
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#list
+        public async Task&lt;DbfsListResponse&gt; DbfsListAsync()
+        {
+            var request = new RestRequest("api/2.0/dbfs/list", Method.GET);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddQueryParameter("path", "/");
+
+            var response = await _client.ExecuteTaskAsync&lt;DbfsListResponse&gt;(request);
+            var dbResponse = JsonConvert.DeserializeObject&lt;DbfsListResponse&gt;(response.Content);
+            return dbResponse;
+        }
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#put
+        public async Task&lt;JObject&gt; DbfsPutAsync(FileInfo file)
+        {
+            var request = new RestRequest("api/2.0/dbfs/put", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddFile("back", file.FullName);
+            request.AddHeader("Content -Type", "multipart/form-data");
+
+            var response = await _client.ExecuteTaskAsync(request);
+            JObject responseContent = JObject.Parse(response.Content);
+            return responseContent;
+        }
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#dbfsdbfsservicecreate
+        public async Task&lt;DatabricksDbfsCreateResponse&gt; DbfsCreateAsync(DatabricksDbfsCreateRequest dbfsRequest)
+        {
+            var request = new RestRequest("api/2.0/dbfs/create", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddJsonBody(dbfsRequest);
+
+            var response = await _client.ExecuteTaskAsync&lt;DatabricksDbfsCreateResponse&gt;(request);
+            var dbResponse = JsonConvert.DeserializeObject&lt;DatabricksDbfsCreateResponse&gt;(response.Content);
+            return dbResponse;
+        }
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#dbfsdbfsserviceaddblock
+        public async Task&lt;JObject&gt; DbfsAddBlockAsync(DatabricksDbfsAddBlockRequest dbfsRequest)
+        {
+            var request = new RestRequest("api/2.0/dbfs/add-block", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddJsonBody(dbfsRequest);
+
+            var response = await _client.ExecuteTaskAsync(request);
+            JObject responseContent = JObject.Parse(response.Content);
+            return responseContent;
+        }
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#close
+        public async Task&lt;JObject&gt; DbfsCloseAsync(DatabricksDbfsCloseRequest dbfsRequest)
+        {
+            var request = new RestRequest("api/2.0/dbfs/close", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddJsonBody(dbfsRequest);
+
+            var response = await _client.ExecuteTaskAsync(request);
+            JObject responseContent = JObject.Parse(response.Content);
+            return responseContent;
+        }
+
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
+        }
+    }
+}
+</pre>
+<p>As I say this is the most complex of all of the APIs I chose to look at. In 
+reality you would probably not kick a <a href="https://databricks.com/">Databricks</a> 
+job off from a UI. You might use a REST API of your own, which could delegate 
+off to some Job manager like <a href="https://www.hangfire.io/">
+https://www.hangfire.io/</a> which would obviously still have to do the polling 
+part for you.&nbsp;</p>
+<p>With all that in place you should be able to pick the JAR from the UI, and 
+submit it, watch it run and see the logs from the <a href="https://databricks.com/">Databricks</a> 
+web UI for the run.</p>
 <p>&nbsp;</p>
-<h1>Conclusion</h1>
+<h1><a name="Conclusion" id="Conclusion">Conclusion</a></h1>
 <p>I have to say using <a href="https://spark.apache.org/">Apache 
 Spark</a>&nbsp; / <a href="https://databricks.com/">Databricks</a> is an 
 absolute dream. <a href="https://databricks.com/">Databricks</a> have just 
-nailed it, its just what was needed, it is awesome what you can do with it. 
+nailed it, it's just what was needed, its awesome what you can do with it. 
 Being able to spin up a cluster on demand that runs a job and is destroyed after 
 the job run (to save the idle costs) is just frickin great.</p>
 <p>I urge you to give it a look, I think you will love it</p>

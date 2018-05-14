@@ -117,9 +117,8 @@ namespace SAS.Spark.Runner.ViewModels.Jobs
                     bool uploadedOk = await IsDbfsFileUploadedAndAvailableAsync(_jarFile, rawBytesLength);
                     if (uploadedOk)
                     {
-                        //TODO : 2.0/jobs/runs/submit
-                        //TODO : ooll for success using jobs/runs/get, store that in the JSON
-
+                        //2.0/jobs/runs/submit
+                        //poll for success using jobs/runs/get, store that in the JSON
                         var runId = await SubmitJarJobAsync(_jarFile);
                         if(!runId.HasValue)
                         {
