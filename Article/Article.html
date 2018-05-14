@@ -4,9 +4,6 @@
 .auto-style1 {
 	font-size: x-large;
 }
-.auto-style2 {
-	background-color: #FFFF00;
-}
 </style>
 </head>
 
@@ -888,6 +885,7 @@ namespace SAS.Spark.Runner.REST.DataBricks
             var dbResponse = JsonConvert.DeserializeObject&lt;DatabricksClusterStartResponse&gt;(response.Content);
             return dbResponse;
         }
+        
         private static string Base64Encode(string plainText)
         {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
@@ -898,7 +896,328 @@ namespace SAS.Spark.Runner.REST.DataBricks
 </pre>
 <p>&nbsp;</p>
 <h2>Jobs API Exploration</h2>
-<p class="auto-style2">TODO</p>
+<p>This section shows the Jobs APIs that I chose to look at</p>
+<p>&nbsp;</p>
+<h3>Jobs List</h3>
+<p> <a href="https://databricks.com/">Databricks</a> docs are here :
+<a href="https://docs.databricks.com/api/latest/jobs.html#list">
+https://docs.databricks.com/api/latest/jobs.html#list</a>, and this API call 
+does the following:</p>
+<ul>
+	<li>Lists all jobs<br></li>
+</ul>
+<p>This is simply done via the following code</p>
+<pre lang="csharp">
+using System;
+using System.Configuration;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using SAS.Spark.Runner.REST.DataBricks.Responses;
+using RestRequest = RestSharp.Serializers.Newtonsoft.Json.RestRequest;
+
+namespace SAS.Spark.Runner.REST.DataBricks
+{
+    public class DatabricksWebApiClient : IDatabricksWebApiClient
+    {
+        private readonly string _baseUrl;
+        private readonly string _authHeader;
+        private readonly RestClient _client;
+
+        public DatabricksWebApiClient()
+        {
+            _baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+            _authHeader = Base64Encode(App.AccessToken);
+            _client = new RestClient(_baseUrl);
+        }
+
+		.....
+		.....
+		
+
+        //https://docs.databricks.com/api/latest/jobs.html#list
+        public async Task&lt;JObject&gt; JobsListAsync()
+        {
+            var request = new RestSharp.Serializers.Newtonsoft.Json.RestRequest("api/2.0/jobs/list", Method.GET);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+
+            var response = await _client.ExecuteTaskAsync(request);
+            JObject responseContent = JObject.Parse(response.Content);
+            return responseContent;
+        }
+		
+		
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
+        }
+    }
+}
+</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h3>Jobs Create</h3>
+<p> <a href="https://databricks.com/">Databricks</a> docs are here :
+<a href="https://docs.databricks.com/api/latest/jobs.html#create">
+https://docs.databricks.com/api/latest/jobs.html#create</a>, and this API call 
+does the following:</p>
+<ul>
+	<li>Creates a new job with the provided settings<br></li>
+</ul>
+<p>This is simply done via the following code</p>
+<pre lang="csharp">
+using System;
+using System.Configuration;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using SAS.Spark.Runner.REST.DataBricks.Responses;
+using RestRequest = RestSharp.Serializers.Newtonsoft.Json.RestRequest;
+
+namespace SAS.Spark.Runner.REST.DataBricks
+{
+    public class DatabricksWebApiClient : IDatabricksWebApiClient
+    {
+        private readonly string _baseUrl;
+        private readonly string _authHeader;
+        private readonly RestClient _client;
+
+        public DatabricksWebApiClient()
+        {
+            _baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+            _authHeader = Base64Encode(App.AccessToken);
+            _client = new RestClient(_baseUrl);
+        }
+
+		.....
+		.....
+		
+
+        //https://docs.databricks.com/api/latest/jobs.html#create
+        public async Task&lt;CreateJobResponse&gt; JobsCreateAsync(string jsonJobRequest)
+        {
+            var request = new RestSharp.Serializers.Newtonsoft.Json.RestRequest("api/2.0/jobs/create", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddParameter("application/json", jsonJobRequest, ParameterType.RequestBody);
+            var response = await _client.ExecuteTaskAsync&lt;CreateJobResponse&gt;(request);
+            var dbResponse = JsonConvert.DeserializeObject&lt;CreateJobResponse&gt;(response.Content);
+            return dbResponse;
+        }
+		
+		
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
+        }
+    }
+}
+</pre>
+<p>An example request for this one is worth a special call out, as its not a simple parameter, we need to pass in quite a lot of JSON form this request. Here is an example 
+request for a job that runs at 10:15pm each night:</p>
+<pre lang="json">
+{
+  "name": "Nightly model training",
+  "new_cluster": {
+    "spark_version": "4.0.x-scala2.11",
+    "node_type_id": "r3.xlarge",
+    "aws_attributes": {
+      "availability": "ON_DEMAND"
+    },
+    "num_workers": 10
+  },
+  "libraries": [
+    {
+      "jar": "dbfs:/my-jar.jar"
+    },
+    {
+      "maven": {
+        "coordinates": "org.jsoup:jsoup:1.7.2"
+      }
+    }
+  ],
+  "email_notifications": {
+    "on_start": [],
+    "on_success": [],
+    "on_failure": []
+  },
+  "timeout_seconds": 3600,
+  "max_retries": 1,
+  "schedule": {
+    "quartz_cron_expression": "0 15 22 ? * *",
+    "timezone_id": "America/Los_Angeles"
+  },
+  "spark_jar_task": {
+    "main_class_name": "com.databricks.ComputeModels"
+  }
+}
+</pre>
+<p>&nbsp;</p>
+<p>Although the demo app doesnt use this one directly, I use a very similar one, 
+which I will go through it quite some detail below.</p>
+<h3>&nbsp;</h3>
+<h3>Jobs Runs Get</h3>
+<p> <a href="https://databricks.com/">Databricks</a> docs are here :
+<a href="https://docs.databricks.com/api/latest/jobs.html#runs-get">
+https://docs.databricks.com/api/latest/jobs.html#runs-get</a>, and this API call 
+does the following:</p>
+<ul>
+	<li>Retrieves the metadata of a run<br></li>
+</ul>
+<p>This is simply done via the following code</p>
+<pre lang="csharp">
+using System;
+using System.Configuration;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using SAS.Spark.Runner.REST.DataBricks.Responses;
+using RestRequest = RestSharp.Serializers.Newtonsoft.Json.RestRequest;
+
+namespace SAS.Spark.Runner.REST.DataBricks
+{
+    public class DatabricksWebApiClient : IDatabricksWebApiClient
+    {
+        private readonly string _baseUrl;
+        private readonly string _authHeader;
+        private readonly RestClient _client;
+
+        public DatabricksWebApiClient()
+        {
+            _baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+            _authHeader = Base64Encode(App.AccessToken);
+            _client = new RestClient(_baseUrl);
+        }
+
+		.....
+		.....
+		
+
+        //https://docs.databricks.com/api/latest/jobs.html#runs-get
+        public async Task&lt;DatabricksRunResponse&gt; JobsRunsGetAsync(int runId)
+        {
+            var request = new RestRequest("api/2.0/jobs/runs/get", Method.GET);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddQueryParameter("run_id", runId.ToString());
+            var response = await _client.ExecuteTaskAsync&lt;DatabricksRunResponse&gt;(request);
+            var dbResponse = JsonConvert.DeserializeObject&lt;DatabricksRunResponse&gt;(response.Content);
+            return dbResponse;
+        }
+		
+		
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
+        }
+    }
+}
+</pre>
+<p>&nbsp;</p>
+<h3>Jobs Run Now</h3>
+<p> <a href="https://databricks.com/">Databricks</a> docs are here :
+<a href="https://docs.databricks.com/api/latest/jobs.html#jobsrunnow">
+https://docs.databricks.com/api/latest/jobs.html#jobsrunnow</a>, and this API call 
+does the following:</p>
+<ul>
+	<li>Runs the job now, and returns the run_id of the triggered run<br></li>
+</ul>
+<p>This is simply done via the following code</p>
+<pre lang="csharp">
+using System;
+using System.Configuration;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using SAS.Spark.Runner.REST.DataBricks.Responses;
+using RestRequest = RestSharp.Serializers.Newtonsoft.Json.RestRequest;
+
+namespace SAS.Spark.Runner.REST.DataBricks
+{
+    public class DatabricksWebApiClient : IDatabricksWebApiClient
+    {
+        private readonly string _baseUrl;
+        private readonly string _authHeader;
+        private readonly RestClient _client;
+
+        public DatabricksWebApiClient()
+        {
+            _baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+            _authHeader = Base64Encode(App.AccessToken);
+            _client = new RestClient(_baseUrl);
+        }
+
+		.....
+		.....
+		
+
+        //https://docs.databricks.com/api/latest/jobs.html#jobsrunnow
+        public async Task&lt;DatabricksRunNowResponse&gt; JobsRunNowAsync(DatabricksRunNowRequest runRequest)
+        {
+            var request = new RestRequest("api/2.0/jobs/run-now", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddJsonBody(runRequest);
+            var response = await _client.ExecuteTaskAsync&lt;DatabricksRunNowResponse&gt;(request);
+            var dbResponse = JsonConvert.DeserializeObject&lt;DatabricksRunNowResponse&gt;(response.Content);
+            return dbResponse;
+        }
+		
+		
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
+        }
+    }
+}
+</pre>
+<p>Where we use this sort of request</p>
+<pre lang="csharp">
+using Newtonsoft.Json;
+
+namespace SAS.Spark.Runner.REST.DataBricks.Requests
+{
+    // If you want to pass args you can do so using extra properties
+    // See : https://docs.databricks.com/api/latest/jobs.html#run-now
+    // - jar_params : 
+    //   A list of parameters for jobs with jar tasks, e.g. "jar_params": ["john doe", "35"]. 
+    //   The parameters will be used to invoke the main function of the main class specified 
+    //   in the spark jar task. If not specified upon run-now, it will default to an empty list.
+    // - notebook_params : 
+    //   A map from keys to values for jobs with notebook task, 
+    //   e.g. "notebook_params": {"name": "john doe", "age":  "35"}. 
+    //   The map is passed to the notebook and will be accessible through the 
+    //   dbutils.widgets.get function
+    // - python_params :
+    //   A list of parameters for jobs with python tasks, e.g. "python_params": ["john doe", "35"]. 
+    //   The parameters will be passed to python file as command line parameters. 
+    // If specified upon run-now, it would overwrite the parameters specified in job setting. 
+    public class DatabricksRunNowRequest
+    {
+        [JsonProperty(PropertyName = "job_id")]
+        public int JobId { get; set; }
+    }
+}
+</pre>
+<p>&nbsp;</p>
+<h3>Jobs Run Submit</h3>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <h1>Conclusion</h1>
