@@ -38,7 +38,7 @@ namespace SAS.Spark.Runner.Services
             while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
             {
                 totalBytesSoFar += bytesRead;
-                statusCallback($"Uploaded {FormatAsNumeric(totalBytesSoFar)} out of {FormatAsNumeric(rawBytes.Length)} bytes to DBFS");
+                statusCallback($"Uploaded {FormatAsNumeric(totalBytesSoFar)} out of {FormatAsNumeric(rawBytesLength)} bytes to DBFS");
                 var base64EncodedData = Convert.ToBase64String(buffer.Take(bytesRead).ToArray());
 
                 await _databricksWebApiClient.DbfsAddBlockAsync(

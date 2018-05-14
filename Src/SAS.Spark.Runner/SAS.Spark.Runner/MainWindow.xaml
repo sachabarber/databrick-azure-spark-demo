@@ -92,7 +92,6 @@
                 <Button Command="{Binding JobsCommand}" 
                         Content="Job API"
                         Tag="Images/Job.png" Style="{StaticResource ImageButtonStyle}"/>
-
             </StackPanel>
         </DataTemplate>
 
@@ -132,20 +131,20 @@
             <DockPanel LastChildFill="True">
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                     <Label Content="ClusterId" Margin="3" VerticalAlignment="Center"
-                           VerticalContentAlignment="Center" Height="24"/>
+                        VerticalContentAlignment="Center" Height="24"/>
                     <TextBox Text="{Binding ClusterId}" Width="200" VerticalAlignment="Center"
-                           VerticalContentAlignment="Center" Height="24"/>
+                        VerticalContentAlignment="Center" Height="24"/>
                     <Button Content="Get Cluster" Margin="3,0,3,0" Width="100" 
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Command="{Binding FetchClusterCommand}"/>
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Command="{Binding FetchClusterCommand}"/>
                 </StackPanel>
                 <avalonEdit:TextEditor
-                    FontFamily="Segoe UI"
-                    SyntaxHighlighting="JavaScript"
-                    FontSize="10pt"
-                    vms:TextEditorProps.JsonText="{Binding ClustersJson}"/>
+                FontFamily="Segoe UI"
+                SyntaxHighlighting="JavaScript"
+                FontSize="10pt"
+                vms:TextEditorProps.JsonText="{Binding ClustersJson}"/>
             </DockPanel>
         </DataTemplate>
 

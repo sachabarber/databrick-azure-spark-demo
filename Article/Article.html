@@ -1,22 +1,915 @@
-<div id="TOC></div>
+
+<head>
+<style type="text/css">
+.auto-style1 {
+	font-size: x-large;
+}
+.auto-style2 {
+	background-color: #FFFF00;
+}
+</style>
+</head>
+
+<div id="TOC"></div>
 <h1>Introduction</h1>
-<h1>What Is Spark?</h1>
+<p>This article I will be talking about <a href="https://spark.apache.org/">Apache 
+Spark</a> / <a href="https://databricks.com/">Databricks</a>. It will guide you 
+through how to use the new cloud based hosted <a href="https://databricks.com/">Databricks</a>platform. This article 
+will talk about it from a Microsoft Azure standpoint but it should be exactly 
+the same ideas if you were to use Amazon cloud.</p>
+<p>&nbsp;</p>
+<h1>What Is Spark / Databricks?</h1>
+<p>A picture says a thousand word, they say, so here is a nice picture of what 
+Apache Spark is.</p>
+<p><a href="WhatIsSparkBig.png" target="_blank"><img alt="" height="411" src="WhatIsSparkSmall.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>&nbsp;</p>
+<p>At its heart <a href="https://spark.apache.org/">Apache 
+Spark</a>&nbsp; is a tool for Data Scientists to allow them to explore and 
+crunch vaste amounts of data with ease. It features things like</p>
+<ul>
+	<li>Distributed Datasets (so that number crunching can happen across a 
+	compute cluster)</li>
+	<li>A DataFrame API, such that you can do things like add columns, aggregate 
+	column values, and alias data, join DataFrames. This also supports a SQL 
+	syntax, and also rund distrobuted across a cluster</li>
+	<li>A streaming API</li>
+	<li>A Machine Learning API</li>
+	<li>A Graph API</li>
+</ul>
+<p>&nbsp;</p>
+<p>Spark also comes with various adaptors to allow it connect to various data 
+sources such as</p>
+<ul>
+	<li>Blobs</li>
+	<li>Databases</li>
+	<li>Filesystems (HDFS / s3 / Azure storage / azure datalake / Databricks 
+	file system)</li>
+</ul>
+<p>&nbsp;</p>
+<p>This is not the first time I have written about <a href="https://spark.apache.org/">Apache 
+Spark</a>, here are some older articles on it should you be interested</p>
+<p>&nbsp;</p>
+<ul>
+	<li>
+	<a href="https://www.codeproject.com/Articles/1023037/Introduction-to-Apache-Spark">
+	Introduction to Apache Spark</a></li>
+	<li>
+	<a href="https://www.codeproject.com/Articles/1073158/Apache-Spark-Cassandra-of">
+	Apache Spark/Cassandra 1 of 2</a></li>
+	<li>
+	<a href="https://www.codeproject.com/Articles/1077934/Apache-Spark-Cassandra-of">
+	Apache Spark/Cassandra 2 of 2</a></li>
+</ul>
+<p>&nbsp;</p>
+<p>So when I wrote those articles, there was limited options about how you could 
+run you <a href="https://spark.apache.org/">Apache 
+Spark</a> jobs on a cluster, you could basically do one of the following:</p>
+<ul>
+	<li>Create a Java/Scala/Python app that used the <a href="https://spark.apache.org/">Apache 
+Spark</a> APIs and would run against a cluster</li>
+	<li>Create a JAR that you could get an existing cluster to run using a
+	<strong>spark-submit</strong> command line</li>
+</ul>
+<p>&nbsp;</p>
+<p>The problem with this was that neither were ideal, with the app approach you 
+didnt really want your analytics job to be an app, you really just wanted it to 
+be a class library of some sort</p>
+<p>&nbsp;</p>
+<p>Spark-Submit would let you submit a class library, however the feedback that 
+you got from it was not great</p>
+<p>&nbsp;</p>
+<p>There was another product that came out to address this call
+<a href="https://livy.incubator.apache.org/">Apache Livy</a> that was a REST API 
+over <a href="https://spark.apache.org/">Apache 
+Spark</a> . But it too had its issues, in that it was not that great to setup, 
+and the API was fairly limited. To address this the good folk that own/maintain 
+Apache Spark came out with <a href="https://databricks.com/">Databricks</a>.</p>
+<p>&nbsp;</p>
+<p><a href="https://databricks.com/">Databricks</a> is essentially a fully managed <a href="https://spark.apache.org/">Apache 
+Spark</a>&nbsp; in the Cloud (Amazon / Azure). It also has the concept of REST 
+APIs for common things. Lets dig into that next.</p>
+<p>&nbsp;</p>
 <h1>Why Is Databricks So Cool?</h1>
+<p>Just before we get into <a href="https://databricks.com/">Databricks</a>, why 
+is it that I think it's so cool?</p>
+<p>Well I have stated one point above already, but lets see the full list</p>
+<ul>
+	<li>Great (really good) REST API</li>
+	<li>Nice managemanent dashboard in the cloud</li>
+	<li>The ability to create a on-demand cluster for your own job run that is 
+	torn down at the end of the job is <span class="auto-style1">MASSIVE</span>. 
+	The reason this one point alone should make you think about examining <a href="https://databricks.com/">Databricks</a> 
+	is as follows<ul>
+		<li>By using your own cluster you are not sharing any resources with 
+		some one else, so you can guarentee your performance based on the nodes 
+		you choose for your cluster</li>
+		<li>The cluster gets torn down after your job has run. This saves you 
+		money</li>
+	</ul>
+	</li>
+	<li>If you chose to use a single cluster rather than a <strong>new</strong> 
+	cluster per job, you can have the single static cluster set to <strong>
+	AutoScale</strong>. This is a pretty neat feature. Just imagine trying to do 
+	that in-premise. Obviously since<a href="https://spark.apache.org/">Apache 
+Spark</a> <a href="https://spark.apache.org/docs/latest/running-on-kubernetes">
+	also supports running on Kubernetes</a> that does ease the process a bit. 
+	However to my mind to make the best use of Kubernetes you also want to run 
+	that on a Cloud such as Amazon / Azure / Google, as scaling the VMs needed 
+	for a cluster is just so MUCH easier if you are in a Cloud. Just as an aside 
+	if you don't know your Kubernetes from an onion I wrote a mini series on it 
+	which you can find here :
+	<a href="https://sachabarbs.wordpress.com/kubernetes-series/">
+	https://sachabarbs.wordpress.com/kubernetes-series/</a></li>
+	<li>It's actually fairly cheap I think for what it gives you</li>
+	<li>It's highly intuitive</li>
+</ul>
+<p>&nbsp;</p>
+<h1>Where Is The Code?</h1>
+<p>So there is a small bit of code that goes with this article, which is split 
+into 2 things</p>
+<ol>
+	<li>A throw-away WPF app that simply acts as a vehicle to demonstrate the 
+	REST calls, in all seriousness you could use postman for the <a href="https://databricks.com/">Databricks</a> 
+	REST exploration. The WPF app just makes this easier, as you don't have to 
+	worry about remembering to set an access token, once you have set it up 
+	once, and trying to find the right REST API syntax. The UI just shows you a 
+	working set of REST calls for <a href="https://databricks.com/">Databricks</a></li>
+	<li>A simple IntelliJ IDEA Scala/SBT project, that represents a <a href="https://spark.apache.org/">Apache 
+Spark</a> job that we wish to upload and run on <a href="https://databricks.com/">Databricks</a>. 
+	This will compiled using SBT, as such SBT is a must have if you want to run 
+	this code</li>
+</ol>
+<p>The code repo can be found here :
+<a href="https://github.com/sachabarber/databrick-azure-spark-demo">
+https://github.com/sachabarber/databrick-azure-spark-demo</a></p>
+<p>&nbsp;</p>
+<h1>Prerequisites</h1>
+<p>There are a few of these, not because <a href="https://databricks.com/">Databricks</a> 
+needs them as such, but because I was keen to show you an entire workflow of how 
+you might use <a href="https://databricks.com/">Databricks</a> for real to do 
+your own jobs, which means we should create a new JAR file to act as a job to 
+send to <a href="https://databricks.com/">Databricks</a>.</p>
+<p>As such the following is required</p>
+<ul>
+	<li>A <a href="https://databricks.com/">Databricks</a> installation (either 
+	Amazon/Azure hosted)</li>
+	<li>Visual Studio 2017 (Community editition is fine here)</li>
+	<li>Java 1.8 SDK installed and in your path</li>
+	<li>IntelliJ IDEA Community Edition 2017.1.3 (or later)</li>
+	<li>SBT Intellij IDEA plugin installed</li>
+</ul>
+<p>Obviously if you just want to read along and not try this yourself, you won't 
+need any of this</p>
+<p>&nbsp;</p>
 <h1>Getting Started With Databricks In Azure</h1>
-<h2>Create The Workspace</h2>
+<p>As I said already I will be using Microsoft Azure, but after the initial 
+creation of <a href="https://databricks.com/">Databricks</a> in the Cloud (which 
+will be cloud vendor specific) the rest of the instructions should hold for 
+Amazon or Azure.</p>
+<p>&nbsp;Anyway the first step for working with <a href="https://databricks.com/">Databricks</a> 
+in the cloud is to create a new <a href="https://databricks.com/">Databricks</a> 
+instance. Which for Azure simple means creating a new resource as follows:</p>
+<p><a href="NewBig.png" target="_blank"><img alt="" height="354" src="NewSmall.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>&nbsp;</p>
+<p>Once you have creating the <a href="https://databricks.com/">Databricks</a> 
+instance, you should be able to launch the workspace from the overview of the <a href="https://databricks.com/">Databricks</a> 
+instance</p>
+<p>&nbsp;</p>
+<p><a href="OverviewBig.png" target="_blank"><img alt="" height="354" src="OverviewSmall.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>&nbsp;</p>
+<p>This should launch you into a new <a href="https://databricks.com/">Databricks</a> 
+workspace website that is coupled to your Azure/Amazon subscription, so you 
+should initially see something like this after you have passed the logging in 
+phase (which happens automatically, well on Azure it does anyway)</p>
+<p>&nbsp;</p>
+<p><a href="WorkSpaceOverviewBig.png" target="_blank"><img alt="" height="354" src="WorkSpaceOverviewSmall.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>&nbsp;</p>
+<p>From here you can see/do the following things, some of which we will explore 
+in more detail below</p>
+<ul>
+	<li>Create a new Job/Cluster/Notebook</li>
+	<li>Explore DBFS (<a href="https://databricks.com/">Databricks</a> 
+	file system) data</li>
+	<li>Look at previous job runs</li>
+	<li>View / start / stop clusters</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2>Exploring The Workspace</h2>
+<p>In this section we are going to explore what you can do in the <a href="https://databricks.com/">Databricks</a> 
+workspace web site that is tied to your <a href="https://databricks.com/">Databricks</a> 
+cloud installation . We will not be leaving the workspace web site, everything 
+below will be done directly in the workspace web site, which to my mind is 
+pretty cool, but where this stuff really shines is when we get to do all of this 
+stuff programatically, rather than just clicking buttons on a web site.</p>
+<p>After all we would like to build this stuff into our own processing 
+pipelines. Luckily there is a pretty good one-one translation from what you can 
+do using the web site compared to what is exposed via the rest API. But I am 
+jumping ahead we will get there in the section after this, so for now lets just 
+examine what we can do in the&nbsp; <a href="https://databricks.com/">Databricks</a> 
+workspace web site that is tied to your <a href="https://databricks.com/">Databricks</a> 
+cloud installation.</p>
+<p>&nbsp;</p>
 <h2>Create A Cluster</h2>
+<p>So the very first thing you might like to do is create a cluster to run some 
+code on. This is easily done using the <a href="https://databricks.com/">Databricks</a> 
+workspace web site as follows</p>
+<p><img alt="" height="741" src="CreateCluster.png" width="400"></p>
+<p>&nbsp;</p>
+<p>This will bring you to a screen like this, where you can configure your 
+cluster, where you pick the variouos bits and peices for your cluster</p>
+<p><a href="CreateCluster2Big.png" target="_blank"><img alt="" height="354" src="CreateCluster2Small.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>&nbsp;</p>
+<p>Once you have created a cluster it will end up being listed on the clusters 
+overview page</p>
+<p><a href="clustersOverviewBig.png" target="_blank"><img alt="" height="354" src="clustersOverviewSmall.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<ul>
+	<li>Interactive clusters are ones that are tied to Notebooks which we look 
+	at next</li>
+	<li>Job clusters are ones that are used to run Jobs</li>
+</ul>
+<p>&nbsp;</p>
 <h2>Explore A NoteBook</h2>
+<p>Now I am a long time Dev (I'm old, or feel it or something), so think nothing 
+about opening up an IDE and writing an app/class lib/jar whatever. Bust at its 
+heart <a href="https://spark.apache.org/">Apache 
+Spark</a> is a tool for data scientists, who simply want to try some simple bits 
+of number crunching code. That is exactly where notbooks come into play.</p>
+<p>A notebook is a cellular editor that is hosted, that allows the user to run 
+python/R/Scala code against a <a href="https://spark.apache.org/">Apache 
+Spark</a> cluster.</p>
+<p>You can create a new notebook from the home menu as shown below</p>
+<p><a href="newNotebookBig.png" target="_blank"><img alt="" height="354" src="newNotebookSmall.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>So after you have picked your language you will be presented with a blank 
+notebook where you can write some code into the cells. Teaching you the short 
+cuts and how to use notebooks properly is outside the scope of this article, but 
+here is some points on notebooks:</p>
+<ul>
+	<li>They allow you to quickly explore the APIs</li>
+	<li>They allow you to re-assign variables which are remembered</li>
+	<li>They allow you to enter just a specific cell</li>
+	<li>They give you some pre-defined variables. But be wary you will need to 
+	swap these out if you translate this to real code. For example <code>spark
+	</code>is a pre-defined variable</li>
+</ul>
+<p>&nbsp;</p>
 <h2>Run Some NoteBook Code</h2>
+<p>So lets say I have just created a Scala notebook, and I typed the text as 
+shown below in a cell. I can quickly run this using ALT&nbsp; + Enter or the run 
+button in the notebook UI</p>
+<p>&nbsp;</p>
+<p><a href="cellBig.png" target="_blank"><img alt="" height="354" src="cellSmall.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>&nbsp;</p>
+<p>What this will do is run the active cell and print out the variables/output 
+statements to the notebook UI, which can also be seen above</p>
+<p>&nbsp;</p>
 <h2>Read/Write From Azure Blob Store</h2>
+<p>One of the very common tasks when using <a href="https://spark.apache.org/">Apache 
+Spark</a> is to grab some data from some external source and save it to storage 
+once transformed into the required results</p>
+<p>&nbsp;</p>
+<p>Here is an example of working with an existing Azure Blob Storage Account and 
+some Scala code. This particular example simply loads a CSV file from Azure Blob 
+Storage transforms the file and then saves it back to Azure Blob Storage as a 
+date stamped named CSV file</p>
+<p>&nbsp;</p>
+<pre lang="scala">
+import java.util.Calendar
+import java.text.SimpleDateFormat
+
+spark.conf.set("fs.azure.account.key.YOUR_STORAGE_ACCOUNT_NAME_HERE.blob.core.windows.net", "YOUR_STORAGE_KEY_HERE")
+
+spark.sparkContext.hadoopConfiguration.set(
+  "fs.azure.account.key.YOUR_STORAGE_ACCOUNT_NAME_HERE.blob.core.windows.net",
+  "YOUR_STORAGE_KEY_HERE"
+)
+
+
+val now = Calendar.getInstance().getTime()
+val minuteFormat = new SimpleDateFormat("mm")
+val hourFormat = new SimpleDateFormat("HH")
+val secondFormat = new SimpleDateFormat("ss")
+
+val currentHour = hourFormat.format(now)      // 12
+val currentMinute = minuteFormat.format(now)  // 29
+val currentSecond = secondFormat.format(now)           // PM
+val fileId  = currentHour  + currentMinute + currentSecond
+fileId
+
+val data = Array(1, 2, 3, 4, 5)
+val dataRdd = sc.parallelize(data)
+val ages_df = spark.read.format("csv")
+  .option("header", "true")
+  .option("inferSchema", "true")
+  .load("wasbs://YOUR_CONTAINER_NAME_HERE@YOUR_STORAGE_ACCOUNT_NAME_HERE.blob.core.windows.net/Ages.csv")
+ages_df.head
+
+//https://github.com/databricks/spark-csv 
+val selectedData = ages_df.select("age")
+selectedData.write
+    .format("com.databricks.spark.csv")
+    .option("header", "false")
+    .save("wasbs://YOUR_CONTAINER_NAME_HERE@YOUR_STORAGE_ACCOUNT_NAME_HERE.blob.core.windows.net/" + fileId + "_SavedAges.csv")
+
+
+val saved_ages_df = spark.read.format("csv")
+  .option("header", "true")
+  .option("inferSchema", "true")
+  .load("wasbs://YOUR_CONTAINER_NAME_HERE@YOUR_STORAGE_ACCOUNT_NAME_HERE.blob.core.windows.net/" + fileId + "_SavedAges.csv")
+
+saved_ages_df.show()
+</pre>
+<p>&nbsp;</p>
+<p>Which for me looked like this for my storage account in Azure</p>
+<p><a href="storageBig.png" target="_blank"><img alt="" height="289" src="storageSmall.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>If you are wondering why there are folders for the results such as 
+080629_SavedAges.csv, this is due to how <a href="https://spark.apache.org/">Apache 
+Spark</a> deals with partitions. Trust me it doesnt matter when you load things 
+back into memory as <a href="https://spark.apache.org/">Apache 
+Spark</a> just deals with this, as can be seen </p>
+<p>&nbsp;</p>
+<p><a href="partBig.png" target="_blank"><img alt="" height="308" src="partSmall.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>&nbsp;</p>
+<h2>Creating Jobs In DataBricks Web UI</h2>
+<p>The <a href="https://databricks.com/">Databricks</a> 
+web UI allows you to create a new job from either a Notebook or a JAR that you 
+have that you can drag in and set a main entry point for. You may also setup a 
+schedule and a cluster that you want to use. Once you are happy you can click 
+the &quot;<strong>run now</strong>&quot; button which will run your job.</p>
+<p><a href="CReateJobBig.png" target="_blank"><img alt="" height="354" src="CReateJobSmall.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>&nbsp;</p>
 <h2>Launch The Spark UI/Dashboard</h2>
-<h2>Examining Jobs In Databricks dashboard</h2>
-<h3>Select NoteBook</h3>
-<h3>Select JAR</h3>
-<h3>Configure Spark-Submit</h3>
-<h3>Setup A Schedule</h3>
+<p>Once you have run a job it is likely that you want to have a look at it to 
+see that it worked how you expected it to work, and that it is running 
+optimally. Luckily <a href="https://spark.apache.org/">Apache 
+Spark</a> comes equipt with a nice visualiser for a given analysis run that you 
+can use for this. Its kind of like the SQL Query Profiler in SQL Server.</p>
+<p>This is accessible from the jobs page</p>
+<p><a href="JobsBig.png" target="_blank"><img alt="" height="354" src="Jobs.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>So lets take a look at a successful job, which we can view using the &quot;<strong>Succeeded</strong>&quot; 
+link in the <strong>Last Run</strong> column in the <strong>Jobs</strong> page.</p>
+<p>From there we can view the <a href="https://spark.apache.org/">Apache 
+Spark</a> UI or the logs for the job.</p>
+<p>Lets see the <a href="https://spark.apache.org/">Apache 
+Spark</a> UI for this job.</p>
+<p><a href="SparkUIBig.png" target="_blank"><img alt="" height="354" src="SparkUI.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>The Spark UI is your friend, try and get acquianted with it</p>
+<p>&nbsp;</p>
 <h1>Databricks API</h1>
-<h2>A Demo App</h2>
-<h2>Jobs API</h2>
+<p>Ok so now that we have covered how to use the <a href="https://databricks.com/">Databricks</a> 
+web UI, how about we get familiar with the REST API such that we can craft our 
+own code around using <a href="https://spark.apache.org/">Apache 
+Spark</a> as our analytics engine. This next section will show how to use some 
+of the REST APIs available.</p>
+<p>&nbsp;</p>
+<h2>What APIs Are Available?</h2>
+<p>So you may now be wondering what APIs are actually available? This is the 
+place to check : <a href="https://docs.databricks.com/api/latest/index.html">
+https://docs.databricks.com/api/latest/index.html</a></p>
+<p>From there the main top level APIs are</p>
+<ul>
+	<li>Clusters</li>
+	<li>DBFS</li>
+	<li>Groups</li>
+	<li>Instance Profiles</li>
+	<li>Jobs</li>
+	<li>Libraries</li>
+	<li>Secrets</li>
+	<li>Token</li>
+	<li>Workspace</li>
+</ul>
+<p>There are simply not enough hours in the day for me to show you ALL of them. 
+So I have chosen a few to demo, which we will talk about below</p>
+<p>&nbsp;</p>
+<h2>Creating A Token For Usage With API</h2>
+<p>The <a href="https://databricks.com/">Databricks</a> 
+REST APIs ALL need to have a JWT token associated with them. Which means you 
+need to firstly create a token for this. This is easily achieved in the <a href="https://databricks.com/">Databricks</a> 
+web UI. Just follow these steps</p>
+<p><a href="DatabricksAzureCreateTokenBig.png" target="_blank"><img alt="" height="338" src="DatabricksAzureCreateToken.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>So once you have done that, grab the token value, and you will also need to 
+take a note of one other bit of information which is shown highlighted in the 
+image below. With these 2 bits of information we can use Postman to try a 
+request</p>
+<p><a href="workspaceInAzureBig.png" target="_blank"><img alt="" height="112" src="workspaceInAzure.png" width="630"><a/></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>&nbsp;</p>
+<h2>Common Stuff You Need To Do With Any API Call</h2>
+<p>So as I just said you will need to ensure that the token from the previous 
+step is supplied on every call. But just how do we do that? What does it look 
+like? Lets use Postman to show an example using the last 2 bits of information 
+from the previous pararaph</p>
+<h3>Creating A Base64 Encoded Token Value</h3>
+<p>The token you got from above needs to be turned into a Base64 encoded string. 
+There are many online tools for this, just pick one. The important thing to note 
+is that you must <strong>ALSO</strong> include a prefix of <code>&quot;token:&quot;</code>. So the full 
+string to encode is something like <code>&quot;token:dapi56b...........d5&quot;</code></p>
+<p>&nbsp;</p>
+<p><img alt="" height="797" src="gettingTokenHeader.png" width="621"></p>
+<p>This will give you a base64 encoded string. From there we need to head into 
+Postman to try out the request, which may look somethinng like this</p>
+<p><a href="testRequestInPostManBig.png" target="_blank"><img alt="" height="280" src="testRequestInPostMan.png" width="630"></a></p>
+<p><em>CLICK FOR BIGGER IMAGE</em></p>
+<p>The important things to note here are:</p>
+<ul>
+	<li>We create a header : <code>Key = Authorization, Value = Basic 
+	YOUR_BASE64_ENCODED_STRING_FROM_PREVIOUS_STEP</code></li>
+	<li>We use the information from the Azure/AWS portal to use as part of the 
+	Uri. So for this is a valid erquest for my <a href="https://databricks.com/">Databricks</a> 
+	Azure installation <code>
+	https://northeurope.azuredatabricks.net/api/2.0/clusters/spark-versions</code></li>
+</ul>
+<p>&nbsp;</p>
+<h2>A Simple Throwaway Demo App</h2>
+<p>Obviously you could just mess around in Postman to learn how the <a href="https://databricks.com/">Databricks</a> 
+REST APIs work, nothing wrong with that at all. But to make life easier for you 
+I have come up with a simple (throw away) demo app that you can use to explore 
+what I think are the 2 most important APIs</p>
+<p>This is what it looks like running</p>
+<p><img alt="" height="354" src="DemoAppBig.png" width="630"></p>
+<p>And here is what it looks like when you have chosen to run one of the 
+pre-canned REST API calls that the demo app provides</p>
+<p>&nbsp;</p>
+<p><img alt="" height="354" src="DemoAppGetClusters.png" width="630"></p>
+<p>&nbsp;</p>
+<h3>How Do I set My Token For The Demo App?</h3>
+<p>So above when I started talking about the <a href="https://databricks.com/">Databricks</a> 
+REST APIs we said we needed to supply an API token. So how does the demo app 
+deal with this. </p>
+<p>Well there are 2 parts to how it does that, this entry in the App.Config 
+should point to your own file that contains the token information</p>
+<p><img alt="" height="393" src="ConfigBig.png" width="630"></p>
+<p>So for me this is my file</p>
+<p>
+<a href="file:///C:/Users/sacha/Desktop/databrick-azure-spark-demo/MyDataBricksToken.txt">
+C:\Users\sacha\Desktop\databrick-azure-spark-demo\MyDataBricksToken.txt</a></p>
+<p>Where the file simply contains a single line of contents <a/> <code>&quot;token:dapi56b...........d5&quot;</code></a> 
+which is the base64 encoded string proceeded by <code>&quot;token:&quot;</code> which we 
+talked about above.</p>
+<p>This is then read into a globally available property in the demo app as 
+follows:</p>
+<pre lang="csharp">
+using System.Configuration;
+using System.IO;
+using System.Windows;
+using SAS.Spark.Runner.REST.DataBricks;
+
+namespace SAS.Spark.Runner
+{
+    public partial class App : Application
+    {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            var tokenFileName = ConfigurationManager.AppSettings["TokenFileLocation"];
+            if (!File.Exists(tokenFileName))
+            {
+                MessageBox.Show("Expecting token file to be provided");
+            }
+
+            AccessToken = File.ReadAllText(tokenFileName);
+
+            if(!AccessToken.StartsWith("token:"))
+            {
+                MessageBox.Show("Token file should start with 'token:' + 
+				  "following directly by YOUR DataBricks initial token you created");
+            }
+        }
+
+        public static string AccessToken { get; private set; }
+    }
+}
+</pre>
+<p>&nbsp;</p>
+<p>And that is all there is to it. The demo app should take care of the rest of 
+it for you.</p>
+<p>&nbsp;</p>
+<p>As I say I did not have time to explore every single API, but I had time to 
+look at 2 of the most common ones, Clusters and Jobs. Which I will talk about 
+below.</p>
+<p>But before I get into that, I just wanted to show you the rough idea behind 
+each of the API explorations</p>
+<p>&nbsp;</p>
+<h3>Example ViewModel</h3>
+<p>Most of the API explorations are done using a viewmodel something like this</p>
+<pre lang="csharp">
+using SAS.Spark.Runner.REST.DataBricks;
+using System;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using SAS.Spark.Runner.Services;
+
+namespace SAS.Spark.Runner.ViewModels.Clusters
+{
+    public class ClusterGetViewModel : INPCBase
+    {
+        private IMessageBoxService _messageBoxService;
+        private IDatabricksWebApiClient _databricksWebApiClient;
+        private string _clustersJson;
+        private string _clusterId;
+
+        public ClusterGetViewModel(
+            IMessageBoxService messageBoxService,
+            IDatabricksWebApiClient databricksWebApiClient)
+        {
+            _messageBoxService = messageBoxService;
+            _databricksWebApiClient = databricksWebApiClient;
+            FetchClusterCommand = 
+				new SimpleAsyncCommand&lt;object, object&gt;(ExecuteFetchClusterCommandAsync);
+        }
+
+        private async Task&lt;object&gt; ExecuteFetchClusterCommandAsync(object param)
+        {
+            if(string.IsNullOrEmpty(_clusterId))
+            {
+                _messageBoxService.ShowError("You must supply 'ClusterId'");
+                return System.Threading.Tasks.Task.FromResult&lt;object&gt;(null);
+            }
+
+            try
+            {
+                var cluster = await _databricksWebApiClient.ClustersGetAsync(_clusterId);
+                ClustersJson = cluster.ToString();
+            }
+            catch(Exception ex)
+            {
+                _messageBoxService.ShowError(ex.Message);
+            }
+            return System.Threading.Tasks.Task.FromResult&lt;object&gt;(null);
+        }
+
+
+        public string ClustersJson
+        {
+            get
+            {
+                return this._clustersJson;
+            }
+            set
+            {
+                RaiseAndSetIfChanged(ref this._clustersJson, 
+					value, () =&gt; ClustersJson);
+            }
+        }
+
+        public string ClusterId
+        {
+            get
+            {
+                return this._clusterId;
+            }
+            set
+            {
+                RaiseAndSetIfChanged(ref this._clusterId, 
+					value, () =&gt; ClusterId);
+            }
+        }
+
+        public ICommand FetchClusterCommand { get; private set; }
+    }
+}
+</pre>
+<p>The idea being that we use simple REST Service and we have a property representing the JSON response. 
+The REST service implements this interface</p>
+<pre lang="csharp">
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using SAS.Spark.Runner.REST.DataBricks.Responses;
+
+namespace SAS.Spark.Runner.REST.DataBricks
+{
+    public interface IDatabricksWebApiClient 
+    {
+
+        //https://docs.databricks.com/api/latest/jobs.html#create
+        Task&lt;CreateJobResponse&gt; JobsCreateAsync(string jsonJobRequest);
+
+        //https://docs.databricks.com/api/latest/jobs.html#jobsrunnow
+        Task&lt;DatabricksRunNowResponse&gt; JobsRunNowAsync(DatabricksRunNowRequest runRequest);
+
+        //https://docs.databricks.com/api/latest/jobs.html#runs-get
+        Task&lt;DatabricksRunResponse&gt; JobsRunsGetAsync(int runId);
+
+        //https://docs.databricks.com/api/latest/jobs.html#list
+        Task&lt;JObject&gt; JobsListAsync();
+
+        //https://docs.azuredatabricks.net/api/latest/jobs.html#runs-submit
+        Task&lt;DatabricksRunNowResponse&gt; JobsRunsSubmitJarTaskAsync(RunsSubmitJarTaskRequest runsSubmitJarTaskRequest);
+
+        //https://docs.azuredatabricks.net/api/latest/clusters.html#start
+        Task&lt;DatabricksClusterStartResponse&gt; ClustersStartAsync(string clusterId);
+
+        //https://docs.azuredatabricks.net/api/latest/clusters.html#get
+        Task&lt;JObject&gt; ClustersGetAsync(string clusterId);
+
+        //https://docs.databricks.com/api/latest/clusters.html#list
+        Task&lt;ClusterListResponse&gt; ClustersListAsync();
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#list
+        Task&lt;DbfsListResponse&gt; DbfsListAsync();
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#put
+        Task&lt;JObject&gt; DbfsPutAsync(FileInfo file);
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#dbfsdbfsservicecreate
+        Task&lt;DatabricksDbfsCreateResponse&gt; DbfsCreateAsync(DatabricksDbfsCreateRequest dbfsRequest);
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#dbfsdbfsserviceaddblock
+        Task&lt;JObject&gt; DbfsAddBlockAsync(DatabricksDbfsAddBlockRequest dbfsRequest);
+
+        //https://docs.azuredatabricks.net/api/latest/dbfs.html#close
+        Task&lt;JObject&gt; DbfsCloseAsync(DatabricksDbfsCloseRequest dbfsRequest);
+    }
+}
+</pre>
+<p>&nbsp;</p>
+<h3>DataTemplate For UI</h3>
+<p>The actual UI is simple done using a <code>DataTemplate</code>, where we have bound the ViewModel in question to a 
+<code>ContentControl</code>. For the JSON representation I am just using the
+<a href="http://avalonedit.net/">AvalonEdit TextBox</a>.</p>
+<p>Here is an example for the ViewModel above:</p>
+<pre lang="xml">
+&lt;Controls:MetroWindow x:Class="SAS.Spark.Runner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vms="clr-namespace:SAS.Spark.Runner.ViewModels"
+        xmlns:vmsClusters="clr-namespace:SAS.Spark.Runner.ViewModels.Clusters"
+        xmlns:vmsJobs="clr-namespace:SAS.Spark.Runner.ViewModels.Jobs"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:SAS.Spark.Runner"       
+        mc:Ignorable="d"
+        WindowState="Maximized"
+        Title="DataBricks API Runner"&gt;
+    &lt;Controls:MetroWindow.Resources&gt;
+		.....
+		.....
+		&lt;DataTemplate DataType="{x:Type vmsClusters:ClusterGetViewModel}"&gt;
+			&lt;DockPanel LastChildFill="True"&gt;
+				&lt;StackPanel Orientation="Horizontal" DockPanel.Dock="Top"&gt;
+					&lt;Label Content="ClusterId" Margin="3" VerticalAlignment="Center"
+						VerticalContentAlignment="Center" Height="24"/&gt;
+					&lt;TextBox Text="{Binding ClusterId}" Width="200" VerticalAlignment="Center"
+						VerticalContentAlig
+						nment="Center" Height="24"/&gt;
+					&lt;Button Content="Get Cluster" Margin="3,0,3,0" Width="100" 
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					VerticalContentAlignment="Center"
+					Command="{Binding FetchClusterCommand}"/&gt;
+				&lt;/StackPanel&gt;
+				&lt;avalonEdit:TextEditor
+				FontFamily="Segoe UI"
+				SyntaxHighlighting="JavaScript"
+				FontSize="10pt"
+				vms:TextEditorProps.JsonText="{Binding ClustersJson}"/&gt;
+			&lt;/DockPanel&gt;
+		&lt;/DataTemplate&gt;
+	&lt;Controls:MetroWindow.Resources&gt;
+&lt;/Controls:MetroWindow&gt;
+</pre>
+<p>&nbsp;</p>
+<p>As the ViewModels used in the demo app all mainly follow this pattern, I wont 
+be showing you any more ViewModel code apart from one where we upload a JAR file 
+as that one is a bit special.</p>
+<p>Just have in the back of your mind that all roughly work this way, and you 
+will be ok</p>
+<p>&nbsp;</p>
+<h2>Cluster API Exploration</h2>
+<p>This section shows the Cluster APIs that I chose to look at</p>
+<p>&nbsp;</p>
+<h3>Clusters List</h3>
+<p> <a href="https://databricks.com/">Databricks</a> docs are here :
+<a href="https://docs.databricks.com/api/latest/clusters.html#list">
+https://docs.databricks.com/api/latest/clusters.html#list</a>, and this API call 
+does the following:</p>
+<ul>
+	<li>Returns information about all pinned clusters, currently active 
+	clusters, up to 70 of the most recently terminated interactive clusters in 
+	the past 30 days, and up to 30 of the most recently terminated job clusters 
+	in the past 30 days. For example, if there is 1 pinned cluster, 4 active 
+	clusters, 45 terminated interactive clusters in the past 30 days, and 50 
+	terminated job clusters in the past 30 days, then this API returns the 1 
+	pinned cluster, 4 active clusters, all 45 terminated interactive clusters, 
+	and the 30 most recently terminated job clusters.<br></li>
+</ul>
+<p>This is simply done via the following code</p>
+<pre lang="csharp">
+using System;
+using System.Configuration;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using SAS.Spark.Runner.REST.DataBricks.Responses;
+using RestRequest = RestSharp.Serializers.Newtonsoft.Json.RestRequest;
+
+namespace SAS.Spark.Runner.REST.DataBricks
+{
+    public class DatabricksWebApiClient : IDatabricksWebApiClient
+    {
+        private readonly string _baseUrl;
+        private readonly string _authHeader;
+        private readonly RestClient _client;
+
+        public DatabricksWebApiClient()
+        {
+            _baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+            _authHeader = Base64Encode(App.AccessToken);
+            _client = new RestClient(_baseUrl);
+        }
+
+		.....
+		.....
+		
+
+        //https://docs.databricks.com/api/latest/clusters.html#list
+        public async Task&lt;ClusterListResponse&gt; ClustersListAsync()
+        {
+            var request = new RestRequest("api/2.0/clusters/list", Method.GET);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+
+            var response = await _client.ExecuteTaskAsync&lt;ClusterListResponse&gt;(request);
+            var dbResponse = JsonConvert.DeserializeObject&lt;ClusterListResponse&gt;(response.Content);
+            return dbResponse;
+        }
+
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
+        }
+    }
+}
+</pre>
+<h3>Cluster Get</h3>
+<p> <a href="https://databricks.com/">Databricks</a> docs are here :
+<a href="https://docs.azuredatabricks.net/api/latest/clusters.html#get">
+https://docs.azuredatabricks.net/api/latest/clusters.html#get</a>, and this API 
+call does the following:</p>
+<ul>
+	<li>Retrieves the information for a cluster given its identifier. Clusters 
+	can be described while they are running, or up to 60 days after they are 
+	terminated</li>
+</ul>
+<p>&nbsp;</p>
+<p>This is simply done via the following code</p>
+<pre lang="csharp">
+using System;
+using System.Configuration;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using SAS.Spark.Runner.REST.DataBricks.Responses;
+using RestRequest = RestSharp.Serializers.Newtonsoft.Json.RestRequest;
+
+namespace SAS.Spark.Runner.REST.DataBricks
+{
+    public class DatabricksWebApiClient : IDatabricksWebApiClient
+    {
+        private readonly string _baseUrl;
+        private readonly string _authHeader;
+        private readonly RestClient _client;
+
+        public DatabricksWebApiClient()
+        {
+            _baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+            _authHeader = Base64Encode(App.AccessToken);
+            _client = new RestClient(_baseUrl);
+        }
+
+		.....
+		.....
+		
+
+        //https://docs.azuredatabricks.net/api/latest/clusters.html#get
+        public async Task&lt;JObject&gt; ClustersGetAsync(string clusterId)
+        {
+            var request = new RestSharp.Serializers.Newtonsoft.Json.RestRequest("api/2.0/clusters/get", Method.GET);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddQueryParameter("cluster_id", clusterId);
+
+            var response = await _client.ExecuteTaskAsync(request);
+            JObject responseContent = JObject.Parse(response.Content);
+            return responseContent;
+        }
+
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
+        }
+    }
+}
+</pre>
+<p>&nbsp;</p>
+<h3>Cluster Start</h3>
+<p> <a href="https://databricks.com/">Databricks</a> docs are here :
+<a href="https://docs.azuredatabricks.net/api/latest/clusters.html#start">
+https://docs.azuredatabricks.net/api/latest/clusters.html#start</a>, and this 
+API call does the following:</p>
+<ul>
+	<li>Starts a terminated Spark cluster given its ID. This is similar to 
+	createCluster, except:<ul>
+		<li>The previous cluster id and attributes are preserved.</li>
+		<li>The cluster starts with the last specified cluster size. If the 
+		previous cluster was an autoscaling cluster, the current cluster starts 
+		with the minimum number of nodes.</li>
+		<li>If the cluster is not currently in a TERMINATED state, nothing will 
+		happen.<br>Clusters launched to run a job cannot be started.</li>
+	</ul>
+	</li>
+</ul>
+<p>&nbsp;</p>
+<p>This is simply done via the following code</p>
+<pre lang="csharp">
+using System;
+using System.Configuration;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using SAS.Spark.Runner.REST.DataBricks.Requests;
+using SAS.Spark.Runner.REST.DataBricks.Responses;
+using RestRequest = RestSharp.Serializers.Newtonsoft.Json.RestRequest;
+
+namespace SAS.Spark.Runner.REST.DataBricks
+{
+    public class DatabricksWebApiClient : IDatabricksWebApiClient
+    {
+        private readonly string _baseUrl;
+        private readonly string _authHeader;
+        private readonly RestClient _client;
+
+        public DatabricksWebApiClient()
+        {
+            _baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+            _authHeader = Base64Encode(App.AccessToken);
+            _client = new RestClient(_baseUrl);
+        }
+
+		.....
+		.....
+		
+
+        //https://docs.azuredatabricks.net/api/latest/clusters.html#start
+        public async Task&lt;DatabricksClusterStartResponse&gt; ClustersStartAsync(string clusterId)
+        {
+            var request = new RestSharp.Serializers.Newtonsoft.Json.RestRequest("api/2.0/clusters/start", Method.POST);
+            request.AddHeader("Authorization", $"Basic {_authHeader}");
+            request.AddJsonBody(new { cluster_id = clusterId });
+
+            var response = await _client.ExecuteTaskAsync&lt;DatabricksClusterStartResponse&gt;(request);
+            var dbResponse = JsonConvert.DeserializeObject&lt;DatabricksClusterStartResponse&gt;(response.Content);
+            return dbResponse;
+        }
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
+        }
+    }
+}
+</pre>
+<p>&nbsp;</p>
+<h2>Jobs API Exploration</h2>
+<p class="auto-style2">TODO</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Conclusion</h1>
+<p>I have to say using <a href="https://spark.apache.org/">Apache 
+Spark</a>&nbsp; / <a href="https://databricks.com/">Databricks</a> is an 
+absolute dream. <a href="https://databricks.com/">Databricks</a> have just 
+nailed it, its just what was needed, it is awesome what you can do with it. 
+Being able to spin up a cluster on demand that runs a job and is destroyed after 
+the job run (to save the idle costs) is just frickin great.</p>
+<p>I urge you to give it a look, I think you will love it</p>
+<p>&nbsp;</p>
 
 
 
